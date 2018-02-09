@@ -3,4 +3,4 @@ basesite/
 manage.py
 __pycache__/
 db.sqlite3
-.vscode
+.vscode/
