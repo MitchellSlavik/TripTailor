@@ -21,12 +21,12 @@ class Traveler(models.Model):
 		return self.user.get_full_name()
 	
 class Trip(models.Model):
-	name = model.CharFeild(max_length=100)
-	cost = model.DecimalField(max_digits=10, decimal_places=2)
-	maxNumTravelers = model.IntegerField()
-	date = model.DateField()
-	description = model.TextField()
-	guide = model.ForeignKey(
+	name = models.CharFeild(max_length=100)
+	cost = models.DecimalField(max_digits=10, decimal_places=2)
+	maxNumTravelers = models.IntegerField()
+	date = models.DateField()
+	description = models.TextField()
+	guide = models.ForeignKey(
 		Guide,
 		on_delete=models.CASCADE,
 		related_name='trips',
@@ -43,11 +43,11 @@ class Trip(models.Model):
 		return self.name
 	
 class Ticket(models.Model):
-	trip = model.ForeignKey(
+	trip = models.ForeignKey(
 		Trip,
 		on_delete=models.CASCADE,
 	)
-	traveler = model.ForeignKey(
+	traveler = models.ForeignKey(
 		Traveler,
 		on_delete=models.CASCADE,
 	)
@@ -56,33 +56,33 @@ class Ticket(models.Model):
 		return self.trip.name + ' ['+self.traveler.__str__()+'] ('+num_travelers+')'
 	
 class Category(models.Model):
-	name = model.CharFeild(max_length=100)
-	isCity = model.BooleanField(default=False)
+	name = models.CharFeild(max_length=100)
+	isCity = models.BooleanField(default=False)
 	def __str__(self):
 		return self.name
 	
 class Location(models.Model):
-	name = model.CharFeild(max_length=100)
-	lat = model.DecimalField(max_digits=14, decimal_places=10)
-	lng = model.DecimalField(max_digits=14, decimal_places=10)
-	description = model.TextField()
-	sequence = model.IntegerField()
-	trip = model.ForeignKey(
+	name = models.CharFeild(max_length=100)
+	lat = models.DecimalField(max_digits=14, decimal_places=10)
+	lng = models.DecimalField(max_digits=14, decimal_places=10)
+	description = models.TextField()
+	sequence = models.IntegerField()
+	trip = models.ForeignKey(
 		Trip,
 		related_name='locaitons'
 	)
 	def __str__(self):
 		return self.name
 	
-class Review:
-	title = model.CharFeild(max_length=100)
-	stars = model.IntegerField()
-	body = model.TextField()
-	traveler = model.ForeignKey(
+class Review(models.Model):
+	title = models.CharFeild(max_length=100)
+	stars = models.IntegerField()
+	body = models.TextField()
+	traveler = models.ForeignKey(
 		Traveler,
 		related_name='reviews'
 	)
-	trip = model.ForeignKey(
+	trip = models.ForeignKey(
 		Trip,
 		related_name='location'
 	)
