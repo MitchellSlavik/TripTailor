@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TripTailor</title>
+    <script
+  src="http://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'triptailor/materialize.css' %}">
+    <link rel="stylesheet" href="{% static 'triptailor/base-template.css'%}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+    <script src="{% static 'triptailor/materialize.js' %}"></script>
+    {% block header %}
+    {% endblock header %}
+    
+</head>
+<body>
+    <div class="navbar-fixed">
+      <nav class="teal accent-4 ">
+        <div class="nav-wrapper">
+          <div class="container">
+            <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
+<<<<<<< HEAD
+            {% if userLoggedIn %}
+              <i class="material-icons right white">person</i>
+            {% else %}
+              <a href="/login" class="right waves-effect waves-light btn">Log in</a>
+            {% endif %}
+              
+=======
+            <a href="/login" class="right waves-effect waves-light btn hide-on-med-and-down ">Log in</a>
+            
+>>>>>>> da2ae40e673dada716c3deeb8a77b00b73c3d93c
+          </div>
+        </div>
+      </nav>
+    </div>
+        
+
+    <div class="container">
+        {% block main %}
+        {% endblock main %}
+    </div>
+</body>
+</html>
