@@ -2,10 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # Create your views here.
 def home(request):
+<<<<<<< HEAD
     data = {
         "userLoggedIn":False,
         "searchResults":[{"details":"kill me"},{"details":"mitch hates being calle mitch"}],
     }
+=======
+    data = {}
+>>>>>>> da2ae40e673dada716c3deeb8a77b00b73c3d93c
     return render(request,"triptailor/home.html",data)
 
 def profile(request):
@@ -28,6 +32,10 @@ def dashboard(request):
 
 def login(request):
     data = {
+<<<<<<< HEAD
         "userLoggedIn":False,
+=======
+        'hello' : "hello friend"
+>>>>>>> da2ae40e673dada716c3deeb8a77b00b73c3d93c
     }
     return render(request,"triptailor/login.html",data)

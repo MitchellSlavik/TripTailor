@@ -3,4 +3,8 @@ basesite/
 manage.py
 __pycache__/
 db.sqlite3
+<<<<<<< HEAD
 .vscode/
+=======
+.vscode/
+>>>>>>> da2ae40e673dada716c3deeb8a77b00b73c3d93c
