@@ -19,9 +19,15 @@ class Traveler(models.Model):
 	)
 	def __str__(self):
 		return self.user.get_full_name()
+
+class Category(models.Model):
+	name = models.CharField(max_length=100)
+	isCity = models.BooleanField(default=False)
+	def __str__(self):
+		return self.name
 	
 class Trip(models.Model):
-	name = models.CharFeild(max_length=100)
+	name = models.CharField(max_length=100)
 	cost = models.DecimalField(max_digits=10, decimal_places=2)
 	maxNumTravelers = models.IntegerField()
 	date = models.DateField()
@@ -33,11 +39,11 @@ class Trip(models.Model):
 	)
 	travelers = models.ManyToManyField(
 		Traveler,
-		through='Ticket'
+		through='Ticket',
 	)
 	categories = models.ManyToManyField(
 		Category,
-		related_name='trips'
+		related_name='trips',
 	)
 	def __str__(self):
 		return self.name
@@ -55,36 +61,33 @@ class Ticket(models.Model):
 	def __str__(self):
 		return self.trip.name + ' ['+self.traveler.__str__()+'] ('+num_travelers+')'
 	
-class Category(models.Model):
-	name = models.CharFeild(max_length=100)
-	isCity = models.BooleanField(default=False)
-	def __str__(self):
-		return self.name
-	
 class Location(models.Model):
-	name = models.CharFeild(max_length=100)
+	name = models.CharField(max_length=100)
 	lat = models.DecimalField(max_digits=14, decimal_places=10)
 	lng = models.DecimalField(max_digits=14, decimal_places=10)
 	description = models.TextField()
 	sequence = models.IntegerField()
 	trip = models.ForeignKey(
 		Trip,
-		related_name='locaitons'
+		related_name='locaitons',
+		on_delete=models.CASCADE
 	)
 	def __str__(self):
 		return self.name
 	
 class Review(models.Model):
-	title = models.CharFeild(max_length=100)
+	title = models.CharField(max_length=100)
 	stars = models.IntegerField()
 	body = models.TextField()
 	traveler = models.ForeignKey(
 		Traveler,
-		related_name='reviews'
+		related_name='reviews',
+		on_delete=models.CASCADE
 	)
 	trip = models.ForeignKey(
 		Trip,
-		related_name='location'
+		related_name='location',
+		on_delete=models.PROTECT
 	)
 	def __str__(self):
 		return self.title
