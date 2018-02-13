@@ -1,4 +1,4 @@
-from django.db import models as model
+from django.db import models
 
 from django.contrib.auth.models import User
 
@@ -59,7 +59,7 @@ class Ticket(models.Model):
 	)
 	num_travelers = models.IntegerField()
 	def __str__(self):
-		return self.trip.name + ' ['+self.traveler.__str__()+'] ('+num_travelers+')'
+		return self.trip.name + ' ['+self.traveler.__str__()+'] ('+self.num_travelers+')'
 	
 class Location(models.Model):
 	name = models.CharField(max_length=100)

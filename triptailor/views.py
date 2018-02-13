@@ -3,7 +3,8 @@ from django.http import HttpResponse
 # Create your views here.
 def home(request):
     data = {
-        "userLoggedIn":False;
+        "userLoggedIn":False,
+        "searchResults":[{"details":"kill me"},{"details":"mitch hates being calle mitch"}],
     }
     return render(request,"triptailor/home.html",data)
 
@@ -27,6 +28,6 @@ def dashboard(request):
 
 def login(request):
     data = {
-        "userLoggedIn":False;
+        "userLoggedIn":False,
     }
     return render(request,"triptailor/login.html",data)
