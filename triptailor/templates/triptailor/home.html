@@ -1,34 +1,67 @@
-{% extends "triptailor/base-template.html" %}
 
+{% extends "triptailor/base-template.html" %}
+{% load static %}
 {% block header %}
+    <link rel="stylesheet" href="{% static '/triptailor/home.css' %}">
     
 {% endblock header %}
     
 
 {% block main %}
+    <div class="row teal lighten-3 z-depth-3">
+        <form action="">
+            <div class="input-field col s4 m3 offset-m2 l3 offset-l2 white-text">
+                <input type="text" name="search_criteria" id="search_criteria">
+                <label for="search_criteria">Search Trips</label>
+            </div> 
+            <div class="input-field col s3 m2 l2 white-text">
+                <input id="start_range" name="start_range" type="text" class="datepicker">
+                <label for="start_range">Start</label>
+            </div>
+            <div class="input-field col s3 m2 l2 white-text">
+                <input id="end_range" name="end_range" type="text" class="datepicker">
+                <label for="end_range">End</label>
+            </div>
+            <div class="input-field col s2 m1 l1">
+                <button class="btn waves-effect waves-light" type="submit" name="action">Submit</button>
+            </div>
+        </form>
+    </div>
     <div class="row">            
         {% for trip in searchResults %}
             <div class="col s12 m4 l3">
                 <div class="card medium ttcards z-depth-3">
                     <div class="card-image waves-effect waves-block waves-light">
-                        <img src="https://goo.gl/mCRd3c" alt="" class="activator"/>
+                        <img src="http://exchangedownloads.smarttech.com/public/content/a2/a28daee5-573f-4f1d-943d-807b0fc164f5/previews/medium/0001.png" alt="" class="activator"/>
                     </div>
-                    <div class="card-content">
-                        <span class="card-title activator truncate">Title<i class="material-icons right">more_vert</i></span>
-                        <p class="truncated" >{{ trip.details }}</p>
+                    <div class="card-content activator">
+                        <div class = "row activator">
+                            <div class="col s10 truncate activator" style="font-size: 16px">{{trip.name}}</div>
+                            <div class="right"><i class="material-icons right activator">more_vert</i></div>
+                            <div class="left card-title activator">${{trip.cost}}</div>
+                        </div>
+                        <div class="row activator">
+                            <div class="left activator">Max People: {{trip.maxNumTravelers}}</div>
+                            <div class="right activator">Date: {{trip.date}}</div>
+                        </div>
                     </div>
                     <div class="card-reveal">
                         <span class="card-title activator">Trip Details<i class="material-icons right">close</i></span>
-                        <iframe src="https://www.google.com/maps/embed/v1/directions
-                        ?key=AIzaSyA1ExTIWTcY3SIuhNXyG4hmw6RT4vwPCbc
-                        &origin=Peter+Kewitt+Institute
-                        &destination=Union+Pacific+Headquarters
-                        &avoid=tolls|highways" frameborder="0"></iframe>
+                        <p>{{ trip.description }}</p>
                     </div>
                 </div>
             </div>
         {% endfor %}
- 
+        <script>
+                $('.datepicker').pickadate({
+                    selectMonths: true, // Creates a dropdown to control month
+                    selectYears: 15, // Creates a dropdown of 15 years to control year,
+                    today: 'Today',
+                    clear: 'Clear',
+                    close: 'Ok',
+                    closeOnSelect: false // Close upon selecting a date,
+                });
+            </script>
     </div>
 {% endblock main %}
     

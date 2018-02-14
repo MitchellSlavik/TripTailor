@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Trip
 # Create your views here.
 def home(request):
     data = {
         "userLoggedIn":False,
-        "searchResults":[{"details":"kill me"},{"details":"mitch hates being calle mitch"}],
+        "searchResults":Trip.objects.all()
     }
     return render(request,"triptailor/home.html",data)
 
@@ -28,10 +29,12 @@ def dashboard(request):
 
 def login(request):
     data = {
-<<<<<<< HEAD
         "userLoggedIn":False,
-=======
-        'hello' : "hello friend"
->>>>>>> da2ae40e673dada716c3deeb8a77b00b73c3d93c
     }
     return render(request,"triptailor/login.html",data)
+
+def createUserPage(request):
+    data = {
+        "userLoggedIn":False,
+    }
+    return render(request,"triptailor/create-user.html",data)
