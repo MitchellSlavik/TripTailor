@@ -1,0 +1,42 @@
+{% extends 'triptailor/base-template.html' %}
+
+
+{% block main %}
+    <div class="row">
+        <div class="card-panel grey lighten-5 col s8 offset-s2 z-depth-5" style="min-height:33vh">
+                <h3 class="center" style="font-weight: 100">Create New Account</h3>
+                <form action="">
+                    <div class="row">
+                        <div class="input-field col s12 m9 offset-m1">
+                            <input type="text" id="first_name" class="">
+                            <label for="first_name">First Name</label>
+                        </div>
+                        <div class="input-field col s12 m9 offset-m1">
+                            <input type="text" id="last_name" class="">
+                            <label for="last_name">Last Name</label>
+                        </div>
+                        <div class="input-field col s12 m9 offset-m1">
+                            <i class="material-icons prefix">person</i>
+                            <input type="text" id="user_name" class="validate">
+                            <label for="username">Username</label>
+                        </div>
+                        <div class="input-field col s12 m9 offset-m1">
+                            <i class="material-icons prefix">email</i>
+                            <input type="email" id="email" class="validate">
+                            <label for="email" data-error="wrong" data-success="right">Email</label>
+                        </div>
+                        <div class="input-field col s12 m9 offset-m1">
+                            <i class="material-icons prefix">lock</i>
+                            <input id="password" type="password" class="validate" required>
+                            <label for="password">Password</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="btn waves-effect waves-light center col s4 offset-s4" type="submit" name="action">Submit
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </div>
+{% endblock main %}
+    

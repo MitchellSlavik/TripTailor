@@ -10,3 +10,12 @@
 body{
     font-family: 'Roboto', sans-serif;
 }
+/* This img tag is to be used for resizing images to fit inside of a div with a restricted size. (preferrably a square) */
+img{
+    object-fit: cover; 
+  }
+
+.profilePic{
+    height:20px;
+    width:20px;
+}
