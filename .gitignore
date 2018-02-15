@@ -1,6 +1,6 @@
 triptailorenv/
 jonallouenv/
-basesite/settings_sensitive.py
+basesite/sensitive_settings.py
 manage.py
 __pycache__/
 db.sqlite3
