@@ -1,5 +1,5 @@
 
-from .settings_sensitive import *
+from .sensitive_settings import *
 
 # Application definition
 
