@@ -38,3 +38,9 @@ def createUserPage(request):
         "userLoggedIn":False,
     }
     return render(request,"triptailor/create-user.html",data)
+
+def createTrip(request):
+    data = {
+        "userLoggedIn":False,
+    }
+    return render(request,"triptailor/create-trip.html",data)
