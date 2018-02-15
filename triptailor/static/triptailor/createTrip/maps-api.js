@@ -30,9 +30,9 @@ function initMap() {
     map: map,
     anchorPoint: new google.maps.Point(0, -29)
   });
-	var locationList = document.getElementById('location-list')
+	var locationList = document.getElementById('location-list');
   $('#addLocation').click(function(){
-  	$("#location-list").append('<li draggable="true" class="ui-state-highlight">'+format_address+'</li>');
+  	$("#location-list").append('<li draggable="true" class="collection-item"><div>'+format_address+'</div></li>');
     
   });
 	
@@ -64,19 +64,19 @@ function initMap() {
     console.log(format_address);
     console.log(place.id);
     
-    trip.append({"place":place_id,"address":format_address}); //starting to consider how we should store the data
+    trip.push({"place":place_id,"address":format_address});
 		
-    
+    console.log(trip);
     infowindowContent.children['place-name'].textContent = place.name;
     infowindowContent.children['place-address'].textContent = address;
     infowindow.open(map, marker);
   });
 
 
-  setupClickListener('changetype-all', []);
-  setupClickListener('changetype-address', ['address']);
-  setupClickListener('changetype-establishment', ['establishment']);
-  setupClickListener('changetype-geocode', ['geocode']);
+  // setupClickListener('changetype-all', []);
+  // setupClickListener('changetype-address', ['address']);
+  // setupClickListener('changetype-establishment', ['establishment']);
+  // setupClickListener('changetype-geocode', ['geocode']);
 
 
 }
