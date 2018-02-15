@@ -33,8 +33,10 @@ from django.urls import path, include
 from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('triptailor.urls')) #add this
+    path('',include('triptailor.urls')), #add this
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
+
 ```
 
 That should be all to configure. However, all is lost if your filestructure doesn't look like:
