@@ -11,4 +11,5 @@ urlpatterns = [
     path('dashboard/',views.dashboard),
     path('login/',views.login),
     path('createuser/',views.createUserPage),
+    path('createtrip/',views.createTrip),
 ]

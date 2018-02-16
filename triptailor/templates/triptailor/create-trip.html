@@ -1,0 +1,42 @@
+{% extends 'triptailor/base-template.html' %}
+{% load static %}
+
+
+{% block header %}
+    <link rel="stylesheet" href="{% static 'triptailor/createTrip/maps-css.css' %}">
+{% endblock header %}
+    
+
+{% block main %}
+    <div class="pac-card" id="pac-card">
+    <div>
+        <h4 id="title" class="teal accent">
+        Search for Tour Spot
+        </h4>
+    </div>
+        <div class="container">
+        <div id="pac-container">
+            <input id="pac-input" type="text"
+                placeholder="Enter a location">
+            <button id="addLocation" class="waves-effect waves-light btn">
+            Add
+            </button>
+        </div>
+        <div >
+            <ul id="location-list" class="collection">
+            </ul>
+        </div>
+    </div>
+    </div>
+    <div id="map"></div>
+    <div id="infowindow-content">
+    <img src="" width="16" height="16" id="place-icon">
+    <span id="place-name"  class="title"></span><br>
+    <span id="place-address"></span>
+    </div>
+    <!-- Replace the value of the key parameter with your own API key. -->
+    <script src="{% static 'triptailor/createTrip/maps-api.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap"
+            async defer></script>
+{% endblock main %}
+    
