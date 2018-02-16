@@ -10,22 +10,20 @@
 {% block main %}
     <div class="pac-card" id="pac-card">
     <div>
-        <h4 id="title" class="teal accent">
+        <div id="title" class="teal accent">
         Search for Tour Spot
-        </h4>
+        </div>
     </div>
-        <div class="container">
-        <div id="pac-container">
-            <input id="pac-input" type="text"
-                placeholder="Enter a location">
-            <button id="addLocation" class="waves-effect waves-light btn">
-            Add
-            </button>
-        </div>
-        <div >
-            <ul id="location-list" class="collection">
-            </ul>
-        </div>
+    <div id="pac-container">
+        <input id="pac-input" type="text"
+            placeholder="Enter a location">
+        <button id="addLocation">
+        Add
+        </button>
+    </div>
+    <div >
+        <ul id="location-list">
+        </ul>
     </div>
     </div>
     <div id="map"></div>
