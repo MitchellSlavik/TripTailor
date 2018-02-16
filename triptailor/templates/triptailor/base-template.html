@@ -22,24 +22,24 @@
 <body>
   <header>
     <div class="navbar-fixed">
-        <nav class="teal accent-4 ">
-          <div class="nav-wrapper">
-            <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
-            {% if userLoggedIn %}
-            <div class="profilePic">
-              <img class="" id="profilePicture" src="https://goo.gl/mCRd3c">
-            </div>
-            {% else %}
-              <ul class="right">
-                <li><a href="/createuser" class=" waves-effect waves-light btn">New User</a></li>
-                <li><a href="/login" class=" waves-effect waves-light btn">Log in</a></li>     
-              </ul>
-            {% endif %}
-          </div>
-        </nav>
-      </div>
-  </header>
-    
+      <nav class="teal accent-4 ">
+        <div class="nav-wrapper">
+          <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
+          {% if user.is_authenticated %}
+            <ul class="right">
+              <li>Welcome {{ user.get_username }}!</li>
+              <li><a href="{% url 'logout'%}" class=" waves-effect waves-light btn">Logout</a></li>   
+            </ul>
+          {% else %}
+            <ul class="right">
+              <li><a href="{% url 'signup'%}" class=" waves-effect waves-light btn">New User</a></li>
+              <li><a href="{% url 'login'%}" class=" waves-effect waves-light btn">Log in</a></li>     
+            </ul>  
+          {% endif %} 
+          
+        </div>
+      </nav>
+    </div>
         
   <main>
     <div class="container">

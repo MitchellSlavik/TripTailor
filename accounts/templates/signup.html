@@ -1,0 +1,20 @@
+{% extends 'triptailor/base-template.html' %}
+
+
+{% block main %}
+    <div class="row">
+        <div class="card-panel grey lighten-5 col s8 offset-s2 z-depth-5" style="min-height:33vh">
+                <h3 class="center" style="font-weight: 100">Create New Account</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    <div class="row">
+                            <button class="btn waves-effect waves-light center col s4 offset-s4" type="submit" name="action">Submit
+                            </button>
+                    </div>
+                </form> 
+               
+        </div>
+    </div>
+{% endblock main %}
+    

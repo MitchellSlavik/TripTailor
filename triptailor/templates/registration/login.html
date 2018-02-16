@@ -7,6 +7,10 @@
 
 {% block main %}
 
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
 <div class="row" style="margin: 0;
 position: absolute;
 top: 50%;
@@ -15,15 +19,16 @@ transform: translate(-50%, -50%);">
   <div class="card-panel grey lighten-5 col s8 offset-s2 z-depth-5" style="min-height:33vh">
     <h3 class="center" style="font-weight: 100">Login</h3>
     <div class="row" >
-      <form action="" class="col s9 offset-s1">
+      <form method="POST" action="{% url 'login' %}" class="col s9 offset-s1">
+          {% csrf_token %}
         <div class="input-field col s12">
           <i class="material-icons prefix">email</i>
-          <input type="email" id="email" class="validate" placeholder="Email" required>
+          <td>{{ form.username }}</td>
           <label for="email" data-error="wrong" data-success="right"></label>
         </div>
         <div class="input-field col s12">
             <i class="material-icons prefix">lock</i>
-            <input id="password" type="password" class="validate" placeholder="Password" required>
+            <td>{{ form.password }}</td>
             <label for="password"></label>
         </div>
         <div class="col s3 offset-s6">
