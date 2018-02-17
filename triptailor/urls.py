@@ -1,4 +1,5 @@
-from django.urls import path
+from django.contrib import admin
+from django.urls import path, include
 
 from . import views
 
@@ -10,4 +11,5 @@ urlpatterns = [
     path('dashboard/',views.dashboard),
     path('login/',views.login),
     path('createuser/',views.createUserPage),
+    path('createtrip/',views.createTrip),
 ]
