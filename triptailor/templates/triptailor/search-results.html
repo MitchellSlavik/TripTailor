@@ -8,27 +8,8 @@
     
 
 {% block main %}
-    <div class="row teal lighten-3 z-depth-3">
-        <form method="GET" action="searchtrip/"> 
-            {% csrf_token %}
-            <div class="input-field col s4 m3 offset-m2 l3 offset-l2 white-text">
-                <input type="text" name="search_criteria" id="search_criteria">
-                <label for="search_criteria">Search Trips</label>
-            </div> 
-            <div class="input-field col s3 m2 l2 white-text">
-                <input id="start_range" name="start_range" type="text" class="datepicker">
-                <label for="start_range">Start</label>
-            </div>
-            <div class="input-field col s3 m2 l2 white-text">
-                <input id="end_range" name="end_range" type="text" class="datepicker">
-                <label for="end_range">End</label>
-            </div>
-            <div class="input-field col s2 m1 l1">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Submit</button>
-            </div>
-        </form>
-    </div>
-    <div class="row">            
+    <div class="row">
+        <h1>Search Results:</h1>
         {% for trip in searchResults %}
             <div class="col s12 m4 l3">
                 <div class="card medium ttcards z-depth-3">
