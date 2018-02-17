@@ -1,7 +1,15 @@
 triptailorenv/
+<<<<<<< HEAD
 basesite/settings_sensitive.py
+=======
+jonallouenv/
+basesite/sensitive_settings.py
+>>>>>>> 852dd428916b569643d930af5e2cc2913e1a900f
 manage.py
 __pycache__/
 db.sqlite3
 .vscode/
+<<<<<<< HEAD
 venv/
+=======
+>>>>>>> 852dd428916b569643d930af5e2cc2913e1a900f
