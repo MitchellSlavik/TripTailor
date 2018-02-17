@@ -1,4 +1,5 @@
 triptailorenv/
+jonallouenv/
 basesite/sensitive_settings.py
 manage.py
 __pycache__/
