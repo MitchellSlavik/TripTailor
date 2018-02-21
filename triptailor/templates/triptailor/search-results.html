@@ -1,18 +1,12 @@
 
-{% extends "triptailor/base-template.html" %}
+{% extends "triptailor/searchbar-template.html" %}
 {% load static %}
-{% block header %}
-    <link rel="stylesheet" href="{% static '/triptailor/home.css' %}">
-    
-{% endblock header %}
-    
 
-{% block main %}
+{% block belowSearch %}
     <div class="row">
-        <h1>Search Results:</h1>
         {% for trip in searchResults %}
             <div class="col s12 m4 l3">
-                <div class="card medium ttcards z-depth-3">
+                <div class="card medium ttcards z-depth-3 hoverable">
                     <div class="card-image waves-effect waves-block waves-light">
                         <img src="http://exchangedownloads.smarttech.com/public/content/a2/a28daee5-573f-4f1d-943d-807b0fc164f5/previews/medium/0001.png" alt="" class="activator"/>
                     </div>
@@ -34,16 +28,14 @@
                 </div>
             </div>
         {% endfor %}
-        <script>
-                $('.datepicker').pickadate({
-                    selectMonths: true, // Creates a dropdown to control month
-                    selectYears: 15, // Creates a dropdown of 15 years to control year,
-                    today: 'Today',
-                    clear: 'Clear',
-                    close: 'Ok',
-                    closeOnSelect: false // Close upon selecting a date,
-                });
-            </script>
     </div>
-{% endblock main %}
+{% endblock belowSearch %}
+    
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $('#searchBar').addClass('teal lighten-2');
+    </script>
+{% endblock scripts %}
     

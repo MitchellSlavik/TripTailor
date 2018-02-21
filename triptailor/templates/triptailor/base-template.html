@@ -22,7 +22,7 @@
 <body>
   <header>
     <div class="navbar-fixed">
-      <nav class="teal accent-4 ">
+      <nav class="">
         <div class="nav-wrapper">
           <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
           {% if user.is_authenticated %}
@@ -46,7 +46,7 @@
     {% endblock main %}
   </main>
    
-  <footer class="page-footer teal accent-4">
+  <footer class="page-footer teal lighten-1">
     <div class="container">
       <div class="row">
         <div class="col s12 m8 l6">
@@ -60,5 +60,12 @@
       </div>
     </div>
   </footer>
+  
+  {% block scripts %}
+    <script>
+      $('nav').addClass('teal lighten-2')
+    </script>
+  {% endblock scripts %}
+    
 </body>
 </html>
