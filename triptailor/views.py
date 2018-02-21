@@ -61,7 +61,19 @@ def createUserPage(request):
     return render(request,"triptailor/create-user.html",data)
 
 def createTrip(request):
-    data = {
-        "userLoggedIn":False,
-    }
-    return render(request,"triptailor/create-trip.html",data)
+    if request.user.is_authenticated:
+        return render(request,"triptailor/create-trip.html",{})
+    else:
+        return(request,"triptailor/home.html",{})
+
+def postNewTrip(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        # form = DinnerForm(request.POST)
+        # if form.is_valid():
+            # name = form.cleaned_data['name']
+            # text = form.cleaned_data['text']
+            # query = Dinner(name = name , text = text)
+            # query.save()
+        print('hello world')
+    else:
+        return(request,"triptailor/home.html",{})

@@ -237,7 +237,7 @@ function initMap() {
   var directionsService = new google.maps.DirectionsService();
   var directionsDisplay = new google.maps.DirectionsRenderer();
   var map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: -33.8688, lng: 151.2195},
+    center: {lat: 40.7128, lng: -74.0060},
     zoom: 13,
     styles:map_styling,
   });
@@ -246,7 +246,7 @@ function initMap() {
   var card = document.getElementById('pac-card');
   var input = document.getElementById('pac-input');
 	var add = document.getElementById('addLocation');
-  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
+  //map.controls[google.maps.ControlPosition.TOP_RIGHT].push(card);
 
   var autocomplete = new google.maps.places.Autocomplete(input);
 

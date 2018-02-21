@@ -8,27 +8,62 @@
     
 
 {% block main %}
-    <div class="pac-card" id="pac-card">
-        <div id="title" class="teal accent">
-            Search for Tour Spot
+    <div class="row">
+        <div class="pac-card col s12 m4 l3" id="pac-card">
+            <div id="title" class="teal accent">
+                Create Trip
+            </div>
+            <div id="pac-container">
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Basic Trip Info</div>
+                        <div class="collapsible-body">
+                            <input type="text" name="name" id="name" placeholder="Trip Name" required>
+                            <input type="text" name="cost" id="cost" placeholder="Cost $0.00" required>
+                            <input type="number" name="maxTravelers" id="maxTravelers" placeholder="Max People" required>
+                            <input type="text" name="date" id="date" class="datepicker" required placeholder="Date">
+                            <a href="#" class="waves-effect waves-light btn" onclick="$('.collapsible').collapsible('open',1)">Next Step!</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">place</i>Trip Locations</div>
+                        <div class="collapsible-body">
+                            <input id="pac-input" type="text"
+                                placeholder="Enter a location" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
+                            <ul id="location-list" class="collection" style="margin-left:15px; margin-right:15px;">
+                            </ul>
+                            <button id="addLocation" class="waves-effect waves-light btn" style="margin-bottom:10px;">
+                                Add
+                            </button>
+                            <a href="#" class="waves-effect waves-light btn" onclick="$('.collapsible').collapsible('open',2)">Next Step!</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">whatshot</i>Put in some spunk!</div>
+                        <div class="collapsible-body">
+                            <textarea id="description" class="materialize-textarea" data-length="240" placeholder="Enter your description here! MAX 240 CHARS"></textarea>
+                            <button class="btn waves-effect waves-light" type="submit" name="action" id="submitTrip">Submit
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </li>
+                    </ul>
+            </div>
         </div>
-        <div id="pac-container">
-            <input id="pac-input" type="text"
-                placeholder="Enter a location" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
-            <ul id="location-list" class="collection" style="margin-left:15px; margin-right:15px;">
-            </ul>
-            <button id="addLocation" class="waves-effect waves-light btn right" style="margin-bottom:10px;">
-                Add
-            </button>
+        <div id="map" style="height:90vh" class="col s12 m8 l9">
+            <div id="infowindow-content">
+                <img src="" width="16" height="16" id="place-icon">
+                <span id="place-name"  class="title"></span><br>
+                <span id="place-address"></span>
+                </div>
         </div>
-    </div>
-    <div id="map" style="height:90vh"></div>
-    <div id="infowindow-content">
-    <img src="" width="16" height="16" id="place-icon">
-    <span id="place-name"  class="title"></span><br>
-    <span id="place-address"></span>
     </div>
     <!-- Replace the value of the key parameter with your own API key. -->
+{% endblock main %}
+
+
+{% block scripts %}
+    {{ block.super }}
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="{% static 'triptailor/createTrip/maps-api.js' %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap"
@@ -37,5 +72,118 @@
         var el = document.getElementById('location-list');
         var sortable = Sortable.create(el);
     </script>
-{% endblock main %}
+
+    <script>
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false // Close upon selecting a date,
+        });
+    </script>
+
+    <script> 
+        $(document).ready(function() {
+            $('#description').characterCounter(); //used for description length
+        });
+    </script>
+    <script>
+        $("#submitTrip").click(createTrip);
+
+        function createTrip(){
+            if(isTripGood())
+                /**
+                * @param {JSON} data //form data - make sure you check your data via isTripGood() before using this function
+                */
+                data = getTripData(); 
+                if(data){
+                    
+                } else{
+                    messageToUser("error with our AJAX data! "+ JSON.stringify(data));
+                    return;
+                }
+            //let's post to the server
+            $.ajax({
+                url:"{% url 'postTrip' %}",
+                data : data,
+                sucess:function(result){        //callback
+                    alert('post successfull');
+                },
+                
+            })
+        }
+
+        function messageToUser(message){
+            alert("From page: "+message);
+        }
+
+        function isTripGood(){
+            name = nameTest();
+            cost = costTest();
+            people = travelerNumberTest();
+            
+            if(name && cost && people){
+                return true
+            }
+            return false;
+        }
+
+
+        function nameTest(){
+            return $('#name').val().length>0;
+        }
+
+        function costTest(){
+            input = $('#cost').val();
+            if(input.length ==0){
+                messageToUser("Your trip needs to cost something! Enter: 0 if you want free");
+            } else if(input.length>0){
+                //logic for all lengths greater than 0
+
+                var moneyReg = RegExp('^\$?(\d+.?\d{0,2})$'); //$1.1, 1.1, 1 all valid - $1.1$ is not valid
+                if(moneyReg.exec(input).length){
+                    moneyInt = parseInt(moneyReg[1]); //first group will have $ if present. [1] is only our int
+                    if(moneyInt>0){
+
+                    } else if (moneyInt ==0){
+
+                    } else{
+                        messageToUser("error with parsing money value: "+moneyInt);
+                    }
+                }
+            }
+        }
+
+
+        function travelerNumberTest(){
+            input = getNonZeroLengthInputElement('#maxTravelers');
+            if(input){
+
+            } else{
+
+            }
+        }
+
+
+        function getNonZeroLengthInputElement(element){
+            val = $(element).val();
+            if(val){
+                return val;
+            }
+            return false; //javascript trickery!
+        }
+        
+        function getNonZeroLengthInnerTextElement(element){
+            text = $(element).text();
+            if (text){
+                return text;
+            }
+            return false;
+        }
+
+    </script>
+{% endblock scripts %}
+    
     
