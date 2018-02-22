@@ -19,11 +19,10 @@ def searchTrip(request):
     #    endrange = request.GET.get('end_range')
         try:
             data = {
-                "searchResults":Trip.objects.filter(name__icontains=searchcriteria) |
-                Trip.objects.filter(maxNumTravelers__icontains=searchcriteria) |
-                Trip.objects.filter(description__icontains=searchcriteria) |
-                Trip.objects.filter(cost__icontains=searchcriteria) |
-                Trip.objects.filter(categories__name__icontains=searchcriteria)
+                "searchResults":Trip.objects.filter(Q(name__icontains=searchcriteria) |
+                Q(maxNumTravelers__icontains=searchcriteria) | Q(description__icontains=searchcriteria) |
+                Q(cost__contains=searchcriteria) | Q(categories__name__icontains=searchcriteria) |
+                Q(guide__user__username__icontains=searchcriteria))
                 #Trip.objects.filter(date__range=[startrange, endrange])
             }
         except Trip.DoesNotExist:
