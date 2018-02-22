@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Trip
 from .models import Guide
+from .models import Category
 from django.db.models import Q
 # Create your views here.
 def home(request):
@@ -14,14 +15,15 @@ def home(request):
 def searchTrip(request):
     if request.method == 'GET':
         searchcriteria = request.GET.get('search_criteria')
-        startrange = request.GET.get('start_range')
-        endrange = request.GET.get('end_range')
+    #    startrange = request.GET.get('start_range')
+    #    endrange = request.GET.get('end_range')
         try:
             data = {
                 "searchResults":Trip.objects.filter(name__icontains=searchcriteria) |
                 Trip.objects.filter(maxNumTravelers__icontains=searchcriteria) |
                 Trip.objects.filter(description__icontains=searchcriteria) |
-                Trip.objects.filter(cost__icontains=searchcriteria)
+                Trip.objects.filter(cost__icontains=searchcriteria) |
+                Trip.objects.filter(categories__name__icontains=searchcriteria)
                 #Trip.objects.filter(date__range=[startrange, endrange])
             }
         except Trip.DoesNotExist:
