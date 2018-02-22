@@ -25,12 +25,8 @@
       <nav>
         <div class="nav-wrapper">
           <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
-          {% if user.is_authenticated %}
-            <ul class="right">
-              <li>Welcome {{ user.get_username }}!</li>
-              <li><a href="{% url 'logout'%}" class=" waves-effect waves-light btn">Logout</a></li>   
-            </ul>
-          {% else %}
+   
+         
             <ul class="right">
               <li><a href="#" >Become a Tailor</a></li> 
               <li><a href="{% url 'login'%}" >Log in</a></li>
@@ -38,7 +34,7 @@
                    
               
             </ul>  
-          {$ endif $} 
+        
           
         </div>
       </nav>
