@@ -22,18 +22,27 @@
 <body>
   <header>
     <div class="navbar-fixed">
+        <ul id="dropdown1" class="dropdown-content">
+            <li><a href="{% url 'profile' %}">Profile</a></li>
+            <li class="divider"></li>
+            <li><a href="/logout/">Log Out</a></li>
+          </ul>
       <nav>
         <div class="nav-wrapper">
           <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
-   
-         
-            <ul class="right">
+          <ul class="right">
+            {% if user.is_authenticated %}
+            <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Hi {{ user.first_name }} {{ user.last_name }}!<i class="material-icons right">arrow_drop_down</i></a></li>
+            {% else %}
+            
               <li><a href="#" >Become a Tailor</a></li> 
-              <li><a href="{% url 'login'%}" >Log in</a></li>
-              <li><a href="{% url 'login'%}#register" class="teal darken-1">Register</a></li>
-                   
-              
-            </ul>  
+              <li><a href="{% url 'traveler_login'%}" >Log in</a></li>
+              <li><a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a></li>          
+            
+            {% endif %}
+          </ul> 
+         
+            
         
           
         </div>

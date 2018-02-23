@@ -47,24 +47,28 @@ h5
 	position: absolute;
 }
 </style>
+
 <div class="container white z-depth-2">
+		
 	<ul class="tabs teal">
 		<li class="tab col s12 m6"><a class="white-text active" href="#login">login</a></li>
 		<li class="tab col s12 m6"><a class="white-text" href="#register">register</a></li>
 	</ul>
 	<div id="login" class="col s12">
-		<form class="col s12">
+		
+		<form class="col s12" id="login_form" method="post" action="/login/">
+			{% csrf_token %}
 			<div class="form-container">
 				<h3 class="teal-text">Howdy!</h3>
 				<div class="row">
 					<div class="input-field col s12">
-						<input id="email" type="email" class="validate">
-						<label for="email">Email</label>
+						<input name="username" type="text" class="validate">
+						<label for="username">Username</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="input-field col s12">
-						<input id="password" type="password" class="validate">
+						<input name="password" type="password" class="validate">
 						<label for="password">Password</label>
 					</div>
 				</div>
@@ -79,41 +83,38 @@ h5
 		</form>
 	</div>
 	<div id="register" class="col s12">
-		<form class="col s12">
+		<form class="col s12" id="user_form" method="post" action="/register/"
+		enctype="multipart/form-data">
+			{% csrf_token %}
 			<div class="form-container">
 				<h3 class="teal-text">Welcome</h3>
 				<div class="row">
 					<div class="input-field col s6">
-						<input id="last_name" type="text" class="validate">
-						<label for="last_name">First Name</label>
+							{{ user_form.first_name}}
+						<label for="lastname">First Name</label>
 					</div>
 					<div class="input-field col s6">
-						<input id="last_name" type="text" class="validate">
+							{{ user_form.last_name}}
 						<label for="last_name">Last Name</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="input-field col s12">
-						<input id="email" type="email" class="validate">
+							{{ user_form.username}}
+						<label for="username">Username</label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="input-field col s12">
+							{{ user_form.email}}
 						<label for="email">Email</label>
 					</div>
 				</div>
+				
 				<div class="row">
 					<div class="input-field col s12">
-						<input id="email-confirm" type="email" class="validate">
-						<label for="email-confirm">Email Confirmation</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="password" type="password" class="validate">
+						{{ user_form.password}}
 						<label for="password">Password</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="password-confirm" type="password" class="validate">
-						<label for="password-confirm">Password Confirmation</label>
 					</div>
 				</div>
 				<center>
@@ -123,4 +124,5 @@ h5
 		</form>
 	</div>
 </div>
+
 {% endblock main %}
