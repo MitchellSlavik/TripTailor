@@ -1,6 +1,9 @@
 
 from .sensitive_settings import *
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -86,3 +89,10 @@ STATIC_URL = '/static/'
 # Temporary login redirects
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# User model
+AUTH_USER_MODEL = 'triptailor.User'
+
+# Media url
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
