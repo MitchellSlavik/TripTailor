@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.contrib.auth.decorators import login_required
-from .models import Trip, Guide
+from .models import *
 from .forms import UserForm, TravelerProfileForm
 from django.db.models import Q
 # Create your views here.
@@ -38,10 +39,14 @@ def searchTrip(request):
 
 @login_required
 def profile(request):
-    data = {
-        'hello': "hello colin"
-    }
-    return render(request, "registration/profile.html", data)
+    if request.user.has_perm('triptailor.is_traveler'):
+        data = {
+            'hello': "hello colin"
+        }
+        return render(request, "registration/profile.html", data)
+    else:
+        return HttpResponse("Permission Denied, you do not have traveler permissions")
+    
 
 
 def trips(request):
@@ -100,6 +105,11 @@ def traveler_register(request):
 
         # If the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
+            
+            
+
+            
+
             # Save the user's form data to the database.
             user = user_form.save()
 
@@ -108,11 +118,17 @@ def traveler_register(request):
             user.set_password(user.password)
             user.save()
 
+            # Add user permissions
+            permission = Permission.objects.get(name='Identifies as a Traveler')
+            user.user_permissions.add(permission)
+
+
             # Now sort out the UserProfile instance.
             # Since we need to set the user attribute ourselves, we set commit=False.
             # This delays saving the model until we're ready to avoid integrity problems.
             profile = profile_form.save(commit=False)
             profile.user = user
+            
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
@@ -192,6 +208,7 @@ def traveler_login(request):
 
 @login_required
 def traveler_logout(request):
+    
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
 

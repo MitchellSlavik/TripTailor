@@ -1,31 +1,14 @@
 from django.db import models
-
-from django.contrib.auth.models import User, AbstractUser
-
+from django.contrib.auth.models import User, AbstractUser, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from .struct import UserType
+
+
 
 
 def user_directory_pofile_pic(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.id, filename)
-
-# class User(AbstractUser):
-# 	profilePic = models.FileField(upload_to=user_directory_pofile_pic, null=True)
-
-# 	def get_Type(self):
-# 		if(self.is_staff):
-# 			return UserType.SUPER
-# 		else:
-# 			try:
-# 				self.guide
-# 				return UserType.GUIDE
-# 			except:
-# 				try:
-# 					self.traveler
-# 					return UserType.TRAVELER
-# 				except:
-# 					return None
-
 
 class Guide(models.Model):
     user = models.OneToOneField(
@@ -36,6 +19,11 @@ class Guide(models.Model):
 
     def __str__(self):
         return self.user.get_full_name()
+
+    class Meta:
+        permissions = (
+            ('is_guide', 'Identifies as a Guide'),
+        )
 
 
 class Traveler(models.Model):
@@ -48,6 +36,10 @@ class Traveler(models.Model):
     def __str__(self):
         return self.user.username
 
+    class Meta:
+        permissions = (
+            ('is_traveler', 'Identifies as a Traveler'),
+        )
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
