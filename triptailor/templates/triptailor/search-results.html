@@ -39,10 +39,13 @@
         {% endfor %}
     </div>
 </div>
-{% endblock belowSearch %} {% block scripts %} {{ block.super }}
+{% endblock belowSearch %} 
+{% block scripts %} 
+{{ block.super }}
 <script>
     $('#searchBar').addClass('white');
     $('nav').removeClass('teal darken-1');
     $('nav').addClass("transparent z-depth-0");
     $("#trip_label, #start_date_label, #end_date_label").addClass('black-text');
-</script> {% endblock scripts %}
+</script> 
+{% endblock scripts %}

@@ -1,5 +1,9 @@
-{% extends 'triptailor/base-template.html' %} {% block header %} {% endblock header %} {% block main %} {% if form.errors
-%}
+{% extends 'triptailor/base-template.html' %} 
+
+{% block header %} 
+{% endblock header %} 
+{% block main %} 
+{% if form.errors%}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 <style>

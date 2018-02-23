@@ -1,4 +1,6 @@
-{% extends 'triptailor/base-template.html' %} {% load static %} {% block header %}
+{% extends 'triptailor/base-template.html' %} 
+{% load static %} 
+{% block header %}
 <link rel="stylesheet" href="{% static '/triptailor/home.css' %}"> {% endblock header %} {% block main %}
 <div class="container">
     <div class="row">
@@ -31,7 +33,11 @@
 </div>
 
 
-{% block belowSearch %} {% endblock belowSearch %} {% endblock main %} {% block scripts %} {{ block.super }}
+{% block belowSearch %} 
+{% endblock belowSearch %} 
+{% endblock main %} 
+{% block scripts %}
+ {{ block.super }}
 <script>
     $('.datepicker').pickadate({
         selectMonths: true, // Creates a dropdown to control month
@@ -43,4 +49,5 @@
     });
     $('nav').removeClass('lighten-2');
     $('nav').addClass('darken-1');
-</script> {% endblock scripts %}
+</script> 
+{% endblock scripts %}

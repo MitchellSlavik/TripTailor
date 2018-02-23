@@ -1,4 +1,6 @@
-{% extends 'triptailor/base-template.html' %} {% load static %} {% block header %}
+{% extends 'triptailor/base-template.html' %} 
+{% load static %} 
+{% block header %}
 <link rel="stylesheet" href="{% static 'triptailor/createTrip/maps-css.css' %}"> {% endblock header %} {% block main %}
 <div class="row">
     <div class="pac-card col s12 m4 l3" id="pac-card">
@@ -54,7 +56,9 @@
     </div>
 </div>
 <!-- Replace the value of the key parameter with your own API key. -->
-{% endblock main %} {% block scripts %} {{ block.super }}
+{% endblock main %} 
+{% block scripts %} 
+{{ block.super }}
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script src="{% static 'triptailor/createTrip/maps-api.js' %}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap"
@@ -174,4 +178,5 @@
         return false;
     }
 
-</script> {% endblock scripts %}
+</script> 
+{% endblock scripts %}
