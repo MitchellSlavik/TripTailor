@@ -1,17 +1,20 @@
 from django.shortcuts import render
-from django.http import HttpResponse , HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Trip, Guide
 from .forms import UserForm, TravelerProfileForm
 from django.db.models import Q
 # Create your views here.
+
+
 def home(request):
     data = {
-        "userLoggedIn":False,
-        "searchResults":Trip.objects.all()
+        "userLoggedIn": False,
+        "searchResults": Trip.objects.all()
     }
-    return render(request,"triptailor/home.html",data)
+    return render(request, "triptailor/home.html", data)
+
 
 def searchTrip(request):
     if request.method == 'GET':
@@ -20,7 +23,7 @@ def searchTrip(request):
         endrange = request.GET.get('end_range')
         try:
             data = {
-                "searchResults":Trip.objects.filter(name__icontains=searchcriteria) |
+                "searchResults": Trip.objects.filter(name__icontains=searchcriteria) |
                 Trip.objects.filter(maxNumTravelers__icontains=searchcriteria) |
                 Trip.objects.filter(description__icontains=searchcriteria) |
                 Trip.objects.filter(cost__icontains=searchcriteria)
@@ -28,40 +31,46 @@ def searchTrip(request):
             }
         except Trip.DoesNotExist:
             data = {"searchResults": None}
-        return render(request,"triptailor/search-results.html",data)
+        return render(request, "triptailor/search-results.html", data)
     else:
-        return render(request,"home.html",{})
+        return render(request, "home.html", {})
 
-@login_required    
+
+@login_required
 def profile(request):
     data = {
-        'hello' : "hello colin"
+        'hello': "hello colin"
     }
-    return render(request,"registration/profile.html",data)
+    return render(request, "registration/profile.html", data)
+
 
 def trips(request):
     data = {
-        'hello' : "hello jonathan"
+        'hello': "hello jonathan"
     }
-    return render(request,"triptailor/trips.html",data)
+    return render(request, "triptailor/trips.html", data)
+
 
 def dashboard(request):
     data = {
-        'hello' : "hello carly"
+        'hello': "hello carly"
     }
-    return render(request,"triptailor/dashboard.html",data)
+    return render(request, "triptailor/dashboard.html", data)
+
 
 def createUserPage(request):
     data = {
-        "userLoggedIn":False,
+        "userLoggedIn": False,
     }
-    return render(request,"triptailor/create-user.html",data)
+    return render(request, "triptailor/create-user.html", data)
+
 
 def createTrip(request):
     if request.user.is_authenticated:
-        return render(request,"triptailor/create-trip.html",{})
+        return render(request, "triptailor/create-trip.html", {})
     else:
-        return(request,"triptailor/home.html",{})
+        return(request, "triptailor/home.html", {})
+
 
 def postNewTrip(request):
     if request.method == 'POST' and request.user.is_authenticated:
@@ -73,7 +82,8 @@ def postNewTrip(request):
             # query.save()
         print('hello world')
     else:
-        return(request,"triptailor/home.html",{})
+        return(request, "triptailor/home.html", {})
+
 
 def traveler_register(request):
 
@@ -129,8 +139,8 @@ def traveler_register(request):
 
     # Render the template depending on the context.
     return render(request,
-            "registration/login.html",
-            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
+                  "registration/login.html",
+                  {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
 
 def traveler_login(request):
@@ -164,7 +174,7 @@ def traveler_login(request):
                 return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            print ("Invalid login details: {0}, {1}".format(username, password))
+            print("Invalid login details: {0}, {1}".format(username, password))
             return HttpResponse("Invalid login details supplied.")
 
     # The request is not a HTTP POST, so display the login form.
@@ -174,10 +184,12 @@ def traveler_login(request):
         # blank dictionary object...
         user_form = UserForm()
         profile_form = TravelerProfileForm()
-        return render(request, 'registration/login.html', 
-            {'user_form': user_form, 'profile_form': profile_form})
+        return render(request, 'registration/login.html',
+                      {'user_form': user_form, 'profile_form': profile_form})
 
 # Use the login_required() decorator to ensure only those logged in can access the view.
+
+
 @login_required
 def traveler_logout(request):
     # Since we know the user is logged in, we can now just log them out.

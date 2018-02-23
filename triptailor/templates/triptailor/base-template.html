@@ -1,68 +1,81 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>TripTailor</title>
-    <script
-  src="http://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{% static 'triptailor/materialize.css' %}">
-    <link rel="stylesheet" href="{% static 'triptailor/base-template.css'%}">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
-    <script src="{% static 'triptailor/materialize.js' %}"></script>
-    {% block header %}
-    {% endblock header %}
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>TripTailor</title>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{% static 'triptailor/materialize.css' %}">
+  <link rel="stylesheet" href="{% static 'triptailor/base-template.css'%}">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
+  <script src="{% static 'triptailor/materialize.js' %}"></script> {% block header %} {% endblock header %}
+
 </head>
+
 <body>
   <header>
     <div class="navbar-fixed">
-        <ul id="dropdown1" class="dropdown-content">
-            <li><a href="{% url 'profile' %}">Profile</a></li>
-            <li class="divider"></li>
-            <li><a href="/logout/">Log Out</a></li>
-          </ul>
+      <ul id="dropdown1" class="dropdown-content">
+        <li>
+          <a href="{% url 'profile' %}">Profile</a>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <a href="/logout/">Log Out</a>
+        </li>
+      </ul>
       <nav>
         <div class="nav-wrapper">
-          <a href="/" class="brand-logo center waves-effect waves-light"><img class="logo" src="{% static 'triptailor/logo.svg' %}" alt=""></a>
+          <a href="/" class="brand-logo center waves-effect waves-light">
+            <img class="logo" src="{% static 'triptailor/logo.svg' %}" alt="">
+          </a>
           <ul class="right">
             {% if user.is_authenticated %}
-            <li><a class="dropdown-button" href="#!" data-activates="dropdown1">Hi {{ user.first_name }} {{ user.last_name }}!<i class="material-icons right">arrow_drop_down</i></a></li>
+            <li>
+              <a class="dropdown-button" href="#!" data-activates="dropdown1">Hi {{ user.first_name }} {{ user.last_name }}!
+                <i class="material-icons right">arrow_drop_down</i>
+              </a>
+            </li>
             {% else %}
-            
-              <li><a href="#" >Become a Tailor</a></li> 
-              <li><a href="{% url 'traveler_login'%}" >Log in</a></li>
-              <li><a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a></li>          
-            
+
+            <li>
+              <a href="#">Become a Tailor</a>
+            </li>
+            <li>
+              <a href="{% url 'traveler_login'%}">Log in</a>
+            </li>
+            <li>
+              <a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a>
+            </li>
+
             {% endif %}
-          </ul> 
-         
-            
-        
-          
+          </ul>
+
+
+
+
         </div>
       </nav>
     </div>
-  </header>      
+  </header>
   <main>
-    {% block main %}
-    {% endblock main %}
+    {% block main %} {% endblock main %}
   </main>
-   
+
   <footer class="page-footer teal lighten-1" style="text-align: center; padding-bottom: 1%;">
-     © 2018 TripTailor Team / UNO
+    © 2018 TripTailor Team / UNO
   </footer>
-  
+
   {% block scripts %}
-    <script>
-      $('nav').addClass('teal lighten-2')
-    </script>
-  {% endblock scripts %}
-    
+  <script>
+    $('nav').addClass('teal lighten-2')
+  </script> {% endblock scripts %}
+
 </body>
+
 </html>

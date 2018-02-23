@@ -1,61 +1,51 @@
-{% extends 'triptailor/base-template.html' %}
-
-{% block header %}
-
-{% endblock header %}
-    
-
-{% block main %}
-
-{% if form.errors %}
+{% extends 'triptailor/base-template.html' %} {% block header %} {% endblock header %} {% block main %} {% if form.errors
+%}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 <style>
-  body
-{
-	background: #f5f5f5;
-}
+	body {
+		background: #f5f5f5;
+	}
 
-h5
-{
-	font-weight: 400;
-}
+	h5 {
+		font-weight: 400;
+	}
 
-.container
-{
-	margin-top: 1%;
-  margin-bottom: 1%;
-	width: 40%;
-	height: 95%;
-}
+	.container {
+		margin-top: 1%;
+		margin-bottom: 1%;
+		width: 40%;
+		height: 95%;
+	}
 
-.tabs .indicator
-{
-	background-color: #e0f2f1;
-	height: 60px;
-	opacity: 0.3;
-}
+	.tabs .indicator {
+		background-color: #e0f2f1;
+		height: 60px;
+		opacity: 0.3;
+	}
 
-.form-container
-{
-	padding: 40px;
-	padding-top: 10px;
-}
+	.form-container {
+		padding: 40px;
+		padding-top: 10px;
+	}
 
-.confirmation-tabs-btn
-{
-	position: absolute;
-}
+	.confirmation-tabs-btn {
+		position: absolute;
+	}
 </style>
 
 <div class="container white z-depth-2">
-		
+
 	<ul class="tabs teal">
-		<li class="tab col s12 m6"><a class="white-text active" href="#login">login</a></li>
-		<li class="tab col s12 m6"><a class="white-text" href="#register">register</a></li>
+		<li class="tab col s12 m6">
+			<a class="white-text active" href="#login">login</a>
+		</li>
+		<li class="tab col s12 m6">
+			<a class="white-text" href="#register">register</a>
+		</li>
 	</ul>
 	<div id="login" class="col s12">
-		
+
 		<form class="col s12" id="login_form" method="post" action="/login/">
 			{% csrf_token %}
 			<div class="form-container">
@@ -83,34 +73,33 @@ h5
 		</form>
 	</div>
 	<div id="register" class="col s12">
-		<form class="col s12" id="user_form" method="post" action="/register/"
-		enctype="multipart/form-data">
+		<form class="col s12" id="user_form" method="post" action="/register/" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="form-container">
 				<h3 class="teal-text">Welcome</h3>
 				<div class="row">
 					<div class="input-field col s6">
-							{{ user_form.first_name}}
+						{{ user_form.first_name}}
 						<label for="lastname">First Name</label>
 					</div>
 					<div class="input-field col s6">
-							{{ user_form.last_name}}
+						{{ user_form.last_name}}
 						<label for="last_name">Last Name</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="input-field col s12">
-							{{ user_form.username}}
+						{{ user_form.username}}
 						<label for="username">Username</label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="input-field col s12">
-							{{ user_form.email}}
+						{{ user_form.email}}
 						<label for="email">Email</label>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<div class="input-field col s12">
 						{{ user_form.password}}
