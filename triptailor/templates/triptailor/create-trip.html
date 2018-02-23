@@ -51,12 +51,12 @@
             </div>
         </div>
         <div id="map" style="height:90vh" class="col s12 m8 l9">
-            <div id="infowindow-content">
+        </div>
+        <div id="infowindow-content">
                 <img src="" width="16" height="16" id="place-icon">
                 <span id="place-name"  class="title"></span><br>
                 <span id="place-address"></span>
                 </div>
-        </div>
     </div>
     <!-- Replace the value of the key parameter with your own API key. -->
 {% endblock main %}
@@ -83,107 +83,32 @@
             closeOnSelect: false // Close upon selecting a date,
         });
     </script>
-
+    <script src="{% static 'triptailor/createTrip/createTripAJAX.js' %}"></script>
+    <script>
+        /** 
+        * Validates trip, gets data, and posts it to server
+        */
+        function createTrip(){
+            var data = {};
+            if(isTripGood()){
+                data = getTripData(); 
+                data['csrfmiddlewaretoken']='{{ csrf_token }}'; //django needs token for posting to server
+                
+                $.post("",data,function(result){
+                    window.location = '{% url "home" %}'; //auto redirect home
+                });
+            }
+        }
+    </script>
+    <script>
+        $("#submitTrip").click(createTrip);
+    </script>
     <script> 
         $(document).ready(function() {
             $('#description').characterCounter(); //used for description length
         });
     </script>
-    <script>
-        $("#submitTrip").click(createTrip);
 
-        function createTrip(){
-            if(isTripGood())
-                /**
-                * @param {JSON} data //form data - make sure you check your data via isTripGood() before using this function
-                */
-                data = getTripData(); 
-                if(data){
-                    
-                } else{
-                    messageToUser("error with our AJAX data! "+ JSON.stringify(data));
-                    return;
-                }
-            //let's post to the server
-            $.ajax({
-                url:"{% url 'postTrip' %}",
-                data : data,
-                sucess:function(result){        //callback
-                    alert('post successfull');
-                },
-                
-            })
-        }
-
-        function messageToUser(message){
-            alert("From page: "+message);
-        }
-
-        function isTripGood(){
-            name = nameTest();
-            cost = costTest();
-            people = travelerNumberTest();
-            
-            if(name && cost && people){
-                return true
-            }
-            return false;
-        }
-
-
-        function nameTest(){
-            return $('#name').val().length>0;
-        }
-
-        function costTest(){
-            input = $('#cost').val();
-            if(input.length ==0){
-                messageToUser("Your trip needs to cost something! Enter: 0 if you want free");
-            } else if(input.length>0){
-                //logic for all lengths greater than 0
-
-                var moneyReg = RegExp('^\$?(\d+.?\d{0,2})$'); //$1.1, 1.1, 1 all valid - $1.1$ is not valid
-                if(moneyReg.exec(input).length){
-                    moneyInt = parseInt(moneyReg[1]); //first group will have $ if present. [1] is only our int
-                    if(moneyInt>0){
-
-                    } else if (moneyInt ==0){
-
-                    } else{
-                        messageToUser("error with parsing money value: "+moneyInt);
-                    }
-                }
-            }
-        }
-
-
-        function travelerNumberTest(){
-            input = getNonZeroLengthInputElement('#maxTravelers');
-            if(input){
-
-            } else{
-
-            }
-        }
-
-
-        function getNonZeroLengthInputElement(element){
-            val = $(element).val();
-            if(val){
-                return val;
-            }
-            return false; //javascript trickery!
-        }
-        
-        function getNonZeroLengthInnerTextElement(element){
-            text = $(element).text();
-            if (text){
-                return text;
-            }
-            return false;
-        }
-
-    </script>
 {% endblock scripts %}
     
     

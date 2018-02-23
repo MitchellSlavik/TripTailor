@@ -220,7 +220,6 @@ function makeRoute(directionsService,directionsDisplay,routeList){
     travelMode: 'DRIVING'
   }, function(response, status) {
     if (status === 'OK') {
-      console.log('got here')
       directionsDisplay.setDirections(response);	//activate directions on map
       //Display table route on screen for user
       var route = response.routes[0];
@@ -240,6 +239,7 @@ function initMap() {
     center: {lat: 40.7128, lng: -74.0060},
     zoom: 13,
     styles:map_styling,
+    gestureHandling:"greedy",
   });
   var format_address = '';
   var place_id= '';
