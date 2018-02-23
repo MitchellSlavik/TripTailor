@@ -1,55 +1,51 @@
-
-{% extends "triptailor/searchbar-template.html" %}
-{% load static %}
-
-{% block header %}
-    <style>
-            body {
-                background-image: url("{% static '/triptailor/home_photo1.jpeg' %}");
-                background-size: cover;
-            }
-
-    </style>
-{% endblock header %}
-
-{% block belowSearch %}
-    <div class="row" style="margin:auto">
-        <div class="container">
-            {% for trip in searchResults %}
-                <div class="col s12 m4 l3">
-                    <div class="card medium ttcards z-depth-3 hoverable">
-                        <div class="card-image waves-effect waves-block waves-light">
-                            <img src="http://exchangedownloads.smarttech.com/public/content/a2/a28daee5-573f-4f1d-943d-807b0fc164f5/previews/medium/0001.png" alt="" class="activator"/>
+ {% extends "triptailor/searchbar-template.html" %} {% load static %} {% block header %}
+<style>
+    body {
+        background-image: url("{% static '/triptailor/home_photo1.jpeg' %}");
+        background-size: cover;
+    }
+</style>
+{% endblock header %} {% block belowSearch %}
+<div class="row" style="margin:auto">
+    <div class="container">
+        {% for trip in searchResults %}
+        <div class="col s12 m4 l3">
+            <div class="card medium ttcards z-depth-3 hoverable">
+                <div class="card-image waves-effect waves-block waves-light">
+                    <img src="http://exchangedownloads.smarttech.com/public/content/a2/a28daee5-573f-4f1d-943d-807b0fc164f5/previews/medium/0001.png"
+                        alt="" class="activator" />
+                </div>
+                <div class="card-content activator">
+                    <div class="row activator">
+                        <div class="col s10 truncate activator" style="font-size: 16px">{{trip.name}}</div>
+                        <div class="right">
+                            <i class="material-icons right activator">more_vert</i>
                         </div>
-                        <div class="card-content activator">
-                            <div class = "row activator">
-                                <div class="col s10 truncate activator" style="font-size: 16px">{{trip.name}}</div>
-                                <div class="right"><i class="material-icons right activator">more_vert</i></div>
-                                <div class="left card-title activator">${{trip.cost}}</div>
-                            </div>
-                            <div class="row activator">
-                                <div class="left activator">Max People: {{trip.maxNumTravelers}}</div>
-                                <div class="right activator">Date: {{trip.date}}</div>
-                            </div>
-                        </div>
-                        <div class="card-reveal">
-                            <span class="card-title activator">Trip Details<i class="material-icons right">close</i></span>
-                            <p>{{ trip.description }}</p>
-                        </div>
+                        <div class="left card-title activator">${{trip.cost}}</div>
+                    </div>
+                    <div class="row activator">
+                        <div class="left activator">Max People: {{trip.maxNumTravelers}}</div>
+                        <div class="right activator">Date: {{trip.date}}</div>
                     </div>
                 </div>
-            {% endfor %}            
+                <div class="card-reveal">
+                    <span class="card-title activator">Trip Details
+                        <i class="material-icons right">close</i>
+                    </span>
+                    <p>{{ trip.description }}</p>
+                </div>
+            </div>
         </div>
+        {% endfor %}
     </div>
-{% endblock belowSearch %}
-
-{% block scripts %}
-    {{ block.super }}
-    <script>
-        $('#searchBar').addClass('white');
-        $('nav').removeClass('teal darken-1');
-        $('nav').addClass("transparent z-depth-0");
-        $("#trip_label, #start_date_label, #end_date_label").addClass('black-text');
-    </script>
+</div>
+{% endblock belowSearch %} 
+{% block scripts %} 
+{{ block.super }}
+<script>
+    $('#searchBar').addClass('white');
+    $('nav').removeClass('teal darken-1');
+    $('nav').addClass("transparent z-depth-0");
+    $("#trip_label, #start_date_label, #end_date_label").addClass('black-text');
+</script> 
 {% endblock scripts %}
-    

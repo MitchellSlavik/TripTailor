@@ -1,4 +1,5 @@
 triptailorenv/
+triptailor/migrations/
 jonallouenv/
 basesite/sensitive_settings.py
 manage.py

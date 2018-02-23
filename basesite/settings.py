@@ -14,7 +14,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'triptailor',
-    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -32,7 +31,7 @@ ROOT_URLCONF = 'basesite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['./templates',],
+        'DIRS': ['./templates', ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,8 +89,8 @@ STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# User model
-AUTH_USER_MODEL = 'triptailor.User'
+# # User model
+# AUTH_USER_MODEL = 'triptailor.User'
 
 # Media url
 MEDIA_URL = '/media/'
