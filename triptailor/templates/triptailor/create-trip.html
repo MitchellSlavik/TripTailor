@@ -101,7 +101,7 @@
         }
         //let's post to the server
         $.ajax({
-            url: "{% url 'postTrip' %}",
+            url: "{% url 'post_trip' %}",
             data: data,
             sucess: function (result) {        //callback
                 alert('post successfull');

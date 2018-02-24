@@ -43,9 +43,6 @@ def profile(request):
         'hello': "hello colin"
     }
     return render(request, "registration/profile.html", data)
-    
-        
-    
 
 
 def trips(request):
@@ -55,38 +52,11 @@ def trips(request):
     return render(request, "triptailor/trips.html", data)
 
 
-def dashboard(request):
-    data = {
-        'hello': "hello carly"
-    }
-    return render(request, "triptailor/dashboard.html", data)
-
-
 def createUserPage(request):
     data = {
         "userLoggedIn": False,
     }
     return render(request, "triptailor/create-user.html", data)
-
-
-def createTrip(request):
-    if request.user.is_authenticated:
-        return render(request, "triptailor/create-trip.html", {})
-    else:
-        return(request, "triptailor/home.html", {})
-
-
-def postNewTrip(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        # form = DinnerForm(request.POST)
-        # if form.is_valid():
-            # name = form.cleaned_data['name']
-            # text = form.cleaned_data['text']
-            # query = Dinner(name = name , text = text)
-            # query.save()
-        print('hello world')
-    else:
-        return(request, "triptailor/home.html", {})
 
 
 def traveler_register(request):
