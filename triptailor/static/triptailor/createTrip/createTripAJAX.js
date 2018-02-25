@@ -35,9 +35,16 @@ function isTripGood(){
 
 function dateTest(){
     var date = getDate();
-    return true; //lazy check
+    if (date.length > 0)
+        return true;
+    return false;
 }
 function getDate(){
+    var raw_date = getNonZeroLengthInputElement("#date");
+    if (raw_date.length > 0){
+        var dateValue = moment(raw_date,"DD-MMMM-YYYY").format("YYYY-MM-DD");
+        return dateValue;
+    }
     return "2018/04/18";
 }
 
@@ -63,7 +70,7 @@ function getLocations(){
         });
         locations.push(id);
     });
-    return locations;
+    return JSON.stringify(locations);
 }
 
 
@@ -75,14 +82,15 @@ function descriptionTest(){
     return false;
 }
 function getDescription(){
-    return getNonZeroLengthInputElement("description");
+    var desc = getNonZeroLengthInputElement("#description");
+    return desc;
 }
 
 
 
 function nameTest(){
     var name = $('#name').val();
-    if (name == null){
+    if (name == null || name == 0){
         alert("Title can't be left empty!");
         return false;
     }

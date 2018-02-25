@@ -90,8 +90,6 @@ class Ticket(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=100)
-    lat = models.DecimalField(max_digits=14, decimal_places=10)
-    lng = models.DecimalField(max_digits=14, decimal_places=10)
     description = models.TextField()
     sequence = models.IntegerField()
     trip = models.ForeignKey(
