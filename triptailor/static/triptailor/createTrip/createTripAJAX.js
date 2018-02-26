@@ -9,7 +9,7 @@ function getTripData(){
         "cost":getCostNumber(),
         "maxTravelers":getMaxTravelers(),
         "date":getDate(),
-        "locations":getLocations(),
+        "locations":JSON.stringify(getLocations()),
         "description":getDescription(),
     }; 
 }
@@ -62,7 +62,7 @@ function locationTest(){
 function getLocations(){
     var locations = [];
     $('#location-list li').each(function(index){
-        var elText = $(this).text();
+        var elText = $(this).find('span').text();
         var id = trip.find(function(stop){
             if(stop.address == elText)
                 return stop.placeId;
@@ -70,7 +70,7 @@ function getLocations(){
         });
         locations.push(id);
     });
-    return JSON.stringify(locations);
+    return locations;
 }
 
 

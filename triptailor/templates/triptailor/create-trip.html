@@ -68,9 +68,24 @@
     <script src="{% static 'triptailor/createTrip/maps-api.js' %}"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap"
             async defer></script>
+    <script src="{% static 'triptailor/moment.js' %}"></script>
+    <script src="{% static 'triptailor/createTrip/createTripAJAX.js' %}"></script>
     <script>
         var el = document.getElementById('location-list');
-        var sortable = Sortable.create(el);
+        var sortable = Sortable.create(el,{
+            //config for sortable location list
+
+            //The only main thing we need is to fire a makeRoute() event when the list has changed order
+            //we will use getLocations()from createTripAJAX to grab our new list locations
+            onUpdate(evt){
+                console.log('list updated!!!');
+                //to make sure we can delete things correctly. We need to update our tripList
+                //to account for the new order of things!
+                trip = getLocations()
+                //then we can make our route since we know things are in order
+                makeRoute(ds,dd,getLocations());
+            }
+        });
     </script>
 
     <script>
@@ -83,8 +98,6 @@
             closeOnSelect: false // Close upon selecting a date,
         });
     </script>
-    <script src="{% static 'triptailor/moment.js' %}"></script>
-    <script src="{% static 'triptailor/createTrip/createTripAJAX.js' %}"></script>
     <script>
         /** 
         * Validates trip, gets data, and posts it to server
@@ -111,6 +124,14 @@
     <script> 
         $(document).ready(function() {
             $('#description').characterCounter(); //used for description length
+        });
+
+        $("#location-list").delegate(".close", "click", function() {
+            var dex = $(this).parent().index();
+            console.log('removing :'+dex+' from trip list' + JSON.stringify(trip[dex]))
+            trip.splice(dex,1);
+            $(this).parent().remove();
+            makeRoute(ds,dd,getLocations());
         });
     </script>
 
