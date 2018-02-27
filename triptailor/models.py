@@ -94,7 +94,7 @@ class Location(models.Model):
     sequence = models.IntegerField()
     trip = models.ForeignKey(
         Trip,
-        related_name='locaitons',
+        related_name='locations',
         on_delete=models.CASCADE
     )
 

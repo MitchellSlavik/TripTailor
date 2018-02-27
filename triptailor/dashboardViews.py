@@ -2,14 +2,22 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Count, Prefetch
 from .models import *
 
+from datetime import datetime
 import json
 
 @permission_required('triptailor.is_guide')
 def view_dashboard(request):
+
+    prefetch = Prefetch("locations", queryset=Location.objects.all().order_by('sequence'), to_attr="locs")
+    
+    pastTrips = request.user.guide.trips.prefetch_related(prefetch).filter(date__lt=datetime.today()).annotate(location_count=Count('locations')).order_by('-date')
+    upcomingTrips = request.user.guide.trips.prefetch_related(prefetch).filter(date__gte=datetime.today()).annotate(location_count=Count('locations')).order_by('-date')
     data = {
-        "trips": request.user.guide.trips.all()
+        "pastTrips": pastTrips,
+        "upcomingTrips": upcomingTrips
     }
 
     return render(request, 'triptailor/dashboard.html', data)
