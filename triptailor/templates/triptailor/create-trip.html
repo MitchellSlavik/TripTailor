@@ -131,7 +131,11 @@
             console.log('removing :'+dex+' from trip list' + JSON.stringify(trip[dex]))
             trip.splice(dex,1);
             $(this).parent().remove();
-            makeRoute(ds,dd,getLocations());
+            console.log(trip);
+            //only create new route if we have something to display
+            if(trip.length>0){
+                makeRoute(ds,dd,getLocations());
+            }
         });
     </script>
 
