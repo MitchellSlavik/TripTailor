@@ -20,4 +20,5 @@ urlpatterns = [
     path('dashboard/', dashboardViews.view_dashboard, name='view_dashboard'),
     path('dashboard/create/', dashboardViews.create_trip, name='create_trip'),
     path('dashboard/post/', dashboardViews.post_new_trip, name="post_trip"),
+    path('dashboard/delete/', dashboardViews.delete_trip, name='delete_trip')
 ]

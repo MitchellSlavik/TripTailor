@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.contrib.auth.decorators import login_required, permission_required
@@ -21,6 +21,22 @@ def view_dashboard(request):
     }
 
     return render(request, 'triptailor/dashboard.html', data)
+
+@permission_required('triptailor.is_guide')
+def delete_trip(request):
+    if request.method == 'GET':
+        data = request.GET.dict()
+
+        id = data.get('id', '')
+
+        if id != '':
+            trip = Trip.objects.get(pk=id)
+
+            if request.user.id == trip.guide.user.id or request.user.is_staff:
+                trip.delete()
+
+    return redirect('view_dashboard')
+
 
 
 @permission_required('triptailor.is_guide')
