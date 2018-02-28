@@ -10,7 +10,6 @@ import json
 
 @permission_required('triptailor.is_guide')
 def view_dashboard(request):
-
     prefetch = Prefetch("locations", queryset=Location.objects.all().order_by('sequence'), to_attr="locs")
     
     pastTrips = request.user.guide.trips.prefetch_related(prefetch).filter(date__lt=datetime.today()).annotate(location_count=Count('locations')).order_by('-date')
@@ -21,6 +20,20 @@ def view_dashboard(request):
     }
 
     return render(request, 'triptailor/dashboard.html', data)
+
+@permission_required('triptailor.is_guide')
+def view_trip(request, trip_id):
+    try:
+        trip = Trip.objects.get(pk=trip_id)
+
+        if trip.guide.user.id == request.user.id:
+            return render(request, 'triptailor/dashboard-trip.html')
+        else:
+            return redirect('view_dashboard')
+    except Trip.DoesNotExist:
+        return redirect('view_dashboard')
+
+    
 
 @permission_required('triptailor.is_guide')
 def delete_trip(request):

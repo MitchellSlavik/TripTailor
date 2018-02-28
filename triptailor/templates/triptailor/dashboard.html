@@ -34,7 +34,7 @@
                     <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.name}}, {% endfor %}</p>
                 </div>
                 <div class="card-action">
-                    <a class="waves-effect waves-light btn-flat teal"><i class="material-icons left">edit</i>Edit Trip</a>
+                    <a class="waves-effect waves-light btn-flat teal" href="{% url 'view_dashboard_trip' trip_id=trip.id %}"><i class="material-icons left">edit</i>Edit Trip</a>
                     <a class="waves-effect waves-light btn-flat red right" onclick="deleteClick({{trip.id}})"><i class="material-icons left">delete</i>Delete Trip</a>
                 </div>
             </div>
