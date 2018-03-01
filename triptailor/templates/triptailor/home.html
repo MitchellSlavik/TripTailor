@@ -3,7 +3,10 @@
  {% block header %}
 <style>
     body {
-        background-image: url("{% static '/triptailor/home_photo1.jpeg' %}");
+        background: url({% static '/triptailor/home_photo1.jpeg' %}) no-repeat center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
         background-size: cover;
     }
 </style>

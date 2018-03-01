@@ -107,12 +107,13 @@
             if(isTripGood()){
                 data = getTripData(); 
                 data['csrfmiddlewaretoken']='{{ csrf_token }}'; //django needs token for posting to server
-                
+                $('#submitTrip').addClass('disabled');
                 var ajax = $.post("",data,function(){
                     console.log(result);
                     window.location = '{% url "view_dashboard" %}'; //auto redirect home
                 });
                 ajax.fail(function(data){ //callback from django if fail
+                    $('#submitTrip').removeClass('disabled');
                     alert('Post to server failed - '+data.error_message);
                 });
             }
