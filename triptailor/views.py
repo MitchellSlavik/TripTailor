@@ -20,14 +20,14 @@ def home(request):
 def searchTrip(request):
     if request.method == 'GET':
         searchcriteria = request.GET.get('search_criteria')
-        startrange = request.GET.get('start_range')
-        endrange = request.GET.get('end_range')
+    #    startrange = request.GET.get('start_range')
+    #    endrange = request.GET.get('end_range')
         try:
             data = {
-                "searchResults": Trip.objects.filter(name__icontains=searchcriteria) |
-                Trip.objects.filter(maxNumTravelers__icontains=searchcriteria) |
-                Trip.objects.filter(description__icontains=searchcriteria) |
-                Trip.objects.filter(cost__icontains=searchcriteria)
+                "searchResults":Trip.objects.filter(Q(name__icontains=searchcriteria) |
+                Q(maxNumTravelers__icontains=searchcriteria) | Q(description__icontains=searchcriteria) |
+                Q(cost__contains=searchcriteria) | Q(categories__name__icontains=searchcriteria) |
+                Q(guide__user__username__icontains=searchcriteria))
                 #Trip.objects.filter(date__range=[startrange, endrange])
             }
         except Trip.DoesNotExist:
