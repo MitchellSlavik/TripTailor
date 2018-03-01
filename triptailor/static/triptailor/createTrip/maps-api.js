@@ -180,14 +180,19 @@ var map_styling = [
 ];
 
 var lastSelected = {};
-var trip = [];
+var trip = [];        //array of JSON dicts in format [{'placeId':STR,'address',STR},etc]
 
+//these are global to make routes from other javaScriptz via makeRoute function
+var ds;
+var dd;
 
 function makeRoute(directionsService,directionsDisplay,routeList){
 	var waypoints = [];
   var start = {};
   var end = {};
   
+  console.log('Making route for:' +JSON.stringify(trip));
+
 	switch(routeList.length){
   	case 0:
     	alert('uh oh no where to go');
@@ -220,7 +225,6 @@ function makeRoute(directionsService,directionsDisplay,routeList){
     travelMode: 'DRIVING'
   }, function(response, status) {
     if (status === 'OK') {
-      console.log('got here')
       directionsDisplay.setDirections(response);	//activate directions on map
       //Display table route on screen for user
       var route = response.routes[0];
@@ -234,12 +238,13 @@ function makeRoute(directionsService,directionsDisplay,routeList){
 }
 
 function initMap() {
-  var directionsService = new google.maps.DirectionsService();
-  var directionsDisplay = new google.maps.DirectionsRenderer();
+  ds = new google.maps.DirectionsService();
+  dd = new google.maps.DirectionsRenderer();
   var map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.7128, lng: -74.0060},
     zoom: 13,
     styles:map_styling,
+    gestureHandling:"greedy",
   });
   var format_address = '';
   var place_id= '';
@@ -263,19 +268,19 @@ function initMap() {
     anchorPoint: new google.maps.Point(0, -29)
   });
 
-  directionsDisplay.setMap(map);
-  var mapRenderOptions = {};
-  var polyLine = {};
-  polyLine.strokeColor="#ffc21c";
-  mapRenderOptions.polylineOptions=polyLine;
-  directionsDisplay.setOptions(directionsDisplay);
+  dd.setMap(map);
+  // var mapRenderOptions = {};
+  // var polyLine = {};
+  // polyLine.strokeColor="#ffc21c";
+  // mapRenderOptions.polylineOptions=polyLine;
+  // directionsDisplay.setOptions(directionsDisplay);
 
 	var locationList = document.getElementById('location-list');
   $('#addLocation').click(function(){
     if (lastSelected.hasOwnProperty('placeId')){
-      $("#location-list").append('<li class="collection-item"><div>'+lastSelected.address+'</div></li>');
+      $("#location-list").append('<li class="collection-item"><span>'+lastSelected.address+'</span><i class="material-icons right close">close</i></li>');
       trip.push(lastSelected);
-      makeRoute(directionsService,directionsDisplay,trip);
+      makeRoute(ds,dd,trip);
       //document.getElementById('pac-input').innerText = '';
       $('#pac-input').val('');
       lastSelected = {};

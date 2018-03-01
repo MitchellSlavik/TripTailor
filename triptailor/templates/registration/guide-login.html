@@ -42,18 +42,18 @@
 
 	<ul class="tabs teal">
 		<li class="tab col s12 m6">
-			<a class="white-text active" href="#login">login</a>
+			<a class="white-text active" href="#login">Guide Login</a>
 		</li>
 		<li class="tab col s12 m6">
-			<a class="white-text" href="#register">register</a>
+			<a class="white-text" href="#register">Guide Sign Up</a>
 		</li>
 	</ul>
 	<div id="login" class="col s12">
 
-		<form class="col s12" id="login_form" method="post" action="/login/">
+		<form class="col s12" id="login_form" method="post" action="/guide_login/">
 			{% csrf_token %}
 			<div class="form-container">
-				<h3 class="teal-text">Howdy!</h3>
+				<h3 class="teal-text">Welcome Back Guide!</h3>
 				<div class="row">
 					<div class="input-field col s12">
 						<input name="username" type="text" class="validate">
@@ -77,10 +77,10 @@
 		</form>
 	</div>
 	<div id="register" class="col s12">
-		<form class="col s12" id="user_form" method="post" action="/register/" enctype="multipart/form-data">
+		<form class="col s12" id="user_form" method="post" action="/guide_register/" enctype="multipart/form-data">
 			{% csrf_token %}
 			<div class="form-container">
-				<h3 class="teal-text">Welcome</h3>
+				<h3 class="teal-text">Sign Up as a Guide!</h3>
 				<div class="row">
 					<div class="input-field col s6">
 						{{ user_form.first_name}}
