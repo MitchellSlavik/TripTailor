@@ -22,12 +22,12 @@ def view_dashboard(request):
     return render(request, 'triptailor/dashboard.html', data)
 
 @permission_required('triptailor.is_guide')
-def view_trip(request, trip_id):
+def edit_trip(request, trip_id):
     try:
         trip = Trip.objects.get(pk=trip_id)
 
         if trip.guide.user.id == request.user.id:
-            return render(request, 'triptailor/dashboard-trip.html')
+            return render(request, 'triptailor/dashboard-edit.html')
         else:
             return redirect('view_dashboard')
     except Trip.DoesNotExist:
