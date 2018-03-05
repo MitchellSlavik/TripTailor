@@ -18,7 +18,7 @@
                             <input type="text" name="name" id="name" placeholder="Trip Name" required value="{{trip.name}}">
                             <input type="text" name="cost" id="cost" placeholder="Cost $0.00" required value="{{trip.cost}}">
                             <input type="number" name="maxTravelers" id="maxTravelers" placeholder="Max People" required value={{trip.maxNumTravelers}}>
-                            <input type="text" name="date" id="date" class="datepicker" required placeholder="Date" value="{{trip.date}}">
+                            <input type="text" name="date" id="date" class="datepicker" required placeholder="Date">
                             <a href="#" class="waves-effect waves-light btn" onclick="$('.collapsible').collapsible('open',1)">Next Step!</a>
                         </div>
                     </li>
@@ -116,6 +116,15 @@
     <script> 
         $(document).ready(function() {
             $('#description').characterCounter(); //used for description length
+
+            $('#date').val(moment("{{trip.date}}", "MMM D, YYYY").format("D MMMM, YYYY"));
+            
+            {% for loc in locations %}
+                $("#location-list").append('<li class="collection-item"><span>{{loc.address}}</span><i class="material-icons right close">close</i></li>');
+                trip.push({address: "{{loc.address}}", placeId: "{{loc.placeId}}"});
+            {% endfor %}
+
+            makeRoute(ds,dd,trip);
         });
 
         $("#location-list").delegate(".close", "click", function() {

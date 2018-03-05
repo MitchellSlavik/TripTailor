@@ -31,7 +31,7 @@
                     <span class="card-title">{{trip.name}}</span>
                     <p>{{trip.date}}</p>
                     <p>{{trip.description}}</p>
-                    <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.name}}, {% endfor %}</p>
+                    <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.address}}, {% endfor %}</p>
                 </div>
                 <div class="card-action">
                     <a class="waves-effect waves-light btn-flat teal" href="{% url 'edit_trip' trip_id=trip.id %}"><i class="material-icons left">edit</i>Edit Trip</a>
@@ -51,7 +51,7 @@
                     <span class="card-title">{{trip.name}}</span>
                     <p>{{trip.date}}</p>
                     <p>{{trip.description}}</p>
-                    <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.name}}, {% endfor %}</p>
+                    <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.address}}, {% endfor %}</p>
                 </div>
             </div>
         </div>

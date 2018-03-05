@@ -27,6 +27,32 @@ def edit_trip(request, trip_id):
         form_data = request.POST.dict()
 
         form_data['locations'] = json.loads(form_data['locations'])
+
+        create_form_elements = ['name','cost','maxTravelers','date','locations','description']
+        
+        if all(item in form_data for item in create_form_elements):
+            trip = Trip.objects.get(pk=trip_id)
+
+            trip.name = form_data['name']
+            trip.cost = form_data['cost']
+            trip.maxNumTravelers = form_data['maxTravelers']
+            trip.date = form_data['date']
+            trip.description = form_data['description']
+
+            trip.save()
+
+            trip.locations.all().delete()
+
+            seq_count = 0
+            for place in form_data['locations']:
+                if(place != None):
+                    location = Location(address= place['address'], sequence = seq_count, trip=trip,placeId=place['placeId'])
+                    location.save()
+                    seq_count +=1
+            
+            return HttpResponse({'status':200})
+        else:
+            return HttpResponse({'status':500})
     else:
         try:
             trip = Trip.objects.get(pk=trip_id)
@@ -85,7 +111,7 @@ def create_trip(request):
             t.save()
             seq_count = 0
             for place in form_data['locations']: #iterate over all locations and add them to DB
-                location = Location(name= place['address'], sequence = seq_count, trip=t,placeId=place['placeId'])
+                location = Location(address= place['address'], sequence = seq_count, trip=t,placeId=place['placeId'])
                 location.save()
                 seq_count +=1
 

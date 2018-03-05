@@ -89,7 +89,7 @@ class Ticket(models.Model):
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     placeId = models.TextField()
     sequence = models.IntegerField()
     trip = models.ForeignKey(
