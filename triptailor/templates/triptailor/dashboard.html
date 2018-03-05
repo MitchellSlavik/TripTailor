@@ -2,12 +2,11 @@
 {% load static %} 
 {% block header %}
 <style>
-   .waves-effect.waves-light.btn-flat {
+   .dashboardButton {
        color: white !important;
-   }
-   .waves-effect.waves-light.btn-flat.right {
-       float: right;
        margin-right: 0 !important;
+       padding: 0 20px !important;
+       margin-top: 5px;
    }
 </style>
 {% endblock header %}
@@ -34,8 +33,18 @@
                     <p>Destinations ({{trip.location_count}}): {% for loc in trip.locs %}{{loc.address}}, {% endfor %}</p>
                 </div>
                 <div class="card-action">
-                    <a class="waves-effect waves-light btn-flat teal" href="{% url 'edit_trip' trip_id=trip.id %}"><i class="material-icons left">edit</i>Edit Trip</a>
-                    <a class="waves-effect waves-light btn-flat red right" onclick="deleteClick({{trip.id}})"><i class="material-icons left">delete</i>Delete Trip</a>
+                    <a class="waves-effect waves-light btn-flat teal dashboardButton" href="{% url 'view_trip' trip_id=trip.id %}">
+                        <i class="material-icons left">edit</i>
+                        View Trip
+                    </a>
+                    <a class="waves-effect waves-light btn-flat teal dashboardButton" href="{% url 'edit_trip' trip_id=trip.id %}">
+                        <i class="material-icons left">edit</i>
+                        Edit Trip
+                    </a>
+                    <a class="waves-effect waves-light btn-flat red dashboardButton" onclick="deleteClick({{trip.id}})">
+                        <i class="material-icons left">delete</i>
+                        Delete Trip
+                    </a>
                 </div>
             </div>
         </div>
