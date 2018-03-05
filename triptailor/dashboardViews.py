@@ -1,18 +1,55 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
 from django.contrib.auth.decorators import login_required, permission_required
+from django.db.models import Count, Prefetch
 from .models import *
 
+from datetime import datetime
 import json
 
 @permission_required('triptailor.is_guide')
 def view_dashboard(request):
+    prefetch = Prefetch("locations", queryset=Location.objects.all().order_by('sequence'), to_attr="locs")
+    
+    pastTrips = request.user.guide.trips.prefetch_related(prefetch).filter(date__lt=datetime.today()).annotate(location_count=Count('locations')).order_by('-date')
+    upcomingTrips = request.user.guide.trips.prefetch_related(prefetch).filter(date__gte=datetime.today()).annotate(location_count=Count('locations')).order_by('-date')
     data = {
-        "trips": request.user.guide.trips.all()
+        "pastTrips": pastTrips,
+        "upcomingTrips": upcomingTrips
     }
 
     return render(request, 'triptailor/dashboard.html', data)
+
+@permission_required('triptailor.is_guide')
+def edit_trip(request, trip_id):
+    try:
+        trip = Trip.objects.get(pk=trip_id)
+
+        if trip.guide.user.id == request.user.id:
+            return render(request, 'triptailor/dashboard-edit.html')
+        else:
+            return redirect('view_dashboard')
+    except Trip.DoesNotExist:
+        return redirect('view_dashboard')
+
+    
+
+@permission_required('triptailor.is_guide')
+def delete_trip(request):
+    if request.method == 'GET':
+        data = request.GET.dict()
+
+        id = data.get('id', '')
+
+        if id != '':
+            trip = Trip.objects.get(pk=id)
+
+            if request.user.id == trip.guide.user.id or request.user.is_staff:
+                trip.delete()
+
+    return redirect('view_dashboard')
+
 
 
 @permission_required('triptailor.is_guide')
