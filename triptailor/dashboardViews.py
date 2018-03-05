@@ -32,7 +32,15 @@ def edit_trip(request, trip_id):
             trip = Trip.objects.get(pk=trip_id)
 
             if trip.guide.user.id == request.user.id:
-                return render(request, 'triptailor/dashboard-edit.html')
+
+                locations = Location.objects.filter(trip__id=trip_id)
+
+                data = {
+                    "trip": trip,
+                    "locations": locations
+                }
+
+                return render(request, 'triptailor/dashboard-edit.html', data)
             else:
                 return redirect('view_dashboard')
         except Trip.DoesNotExist:
@@ -77,7 +85,7 @@ def create_trip(request):
             t.save()
             seq_count = 0
             for place in form_data['locations']: #iterate over all locations and add them to DB
-                location = Location(name= place['address'], sequence = seq_count, trip=t,description=place['placeId'])
+                location = Location(name= place['address'], sequence = seq_count, trip=t,placeId=place['placeId'])
                 location.save()
                 seq_count +=1
 

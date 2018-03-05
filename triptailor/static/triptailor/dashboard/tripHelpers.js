@@ -51,10 +51,7 @@ function getDate(){
 
 
 function locationTest(){
-    var c = 0;
-    $('#location-list li').each(function(item){
-        c++;
-    });
+    var c = $('#location-list li').length;
     if(c>0)
         return true;
     alert('Your trip is too short! Add something!');
