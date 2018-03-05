@@ -10,7 +10,7 @@ urlpatterns = [
     path('searchtrip/',views.searchTrip, name='searchTrip'),
     path('trips/',views.trips),
     path('profile/', views.profile, name="profile"),
-    path('trips/', views.trips),
+    path('trips/<int:tripId>/', views.trips),
     path('register/', views.traveler_register, name="traveler_register"),
     path('login/', views.traveler_login, name="traveler_login"),
     path('guide_register/', views.guide_register, name="guide_register"),
