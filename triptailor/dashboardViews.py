@@ -23,15 +23,20 @@ def view_dashboard(request):
 
 @permission_required('triptailor.is_guide')
 def edit_trip(request, trip_id):
-    try:
-        trip = Trip.objects.get(pk=trip_id)
+    if request.method == 'POST':
+        form_data = request.POST.dict()
 
-        if trip.guide.user.id == request.user.id:
-            return render(request, 'triptailor/dashboard-edit.html')
-        else:
+        form_data['locations'] = json.loads(form_data['locations'])
+    else:
+        try:
+            trip = Trip.objects.get(pk=trip_id)
+
+            if trip.guide.user.id == request.user.id:
+                return render(request, 'triptailor/dashboard-edit.html')
+            else:
+                return redirect('view_dashboard')
+        except Trip.DoesNotExist:
             return redirect('view_dashboard')
-    except Trip.DoesNotExist:
-        return redirect('view_dashboard')
 
     
 
@@ -78,18 +83,4 @@ def create_trip(request):
 
         return HttpResponse({'status':200})
     else:
-        return render(request, "triptailor/create-trip.html", {})
-
-
-@permission_required('triptailor.is_guide')
-def post_new_trip(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        # form = DinnerForm(request.POST)
-        # if form.is_valid():
-            # name = form.cleaned_data['name']
-            # text = form.cleaned_data['text']
-            # query = Dinner(name = name , text = text)
-            # query.save()
-        print('hello world')
-    else:
-        return(request, "triptailor/home.html", {})
+        return render(request, "triptailor/dashboard-create.html", {})
