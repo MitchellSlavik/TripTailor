@@ -94,7 +94,7 @@ class Location(models.Model):
     sequence = models.IntegerField()
     trip = models.ForeignKey(
         Trip,
-        related_name='locaitons',
+        related_name='locations',
         on_delete=models.CASCADE
     )
 
@@ -119,3 +119,14 @@ class Review(models.Model):
 
     def __str__(self):
         return self.title
+
+class TripPicture(models.Model):
+    image = models.ImageField(
+        upload_to="trip_pictures/",
+    ) #TripPicture.image.path (/media/trip_pictures/asdlkfj.png)
+    sequence = models.IntegerField()
+    trip = models.ForeignKey(
+        Trip,
+        related_name="images",
+        on_delete=models.CASCADE
+    )
