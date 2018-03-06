@@ -9,6 +9,17 @@ from datetime import datetime
 import json
 
 @permission_required('triptailor.is_guide')
+def myTrips(request):
+    current_user = request.user
+    try:
+        data = {
+            "mytrips":Trip.objects.filter(guide__user__username__icontains=current_user)
+        }
+    except Trip.DoesNotExist:
+        data = {"searchResults": None}
+    return render(request, "triptailor/trips.html", data)
+    
+@permission_required('triptailor.is_guide')
 def view_dashboard(request):
     prefetch = Prefetch("locations", queryset=Location.objects.all().order_by('sequence'), to_attr="locs")
     
@@ -49,8 +60,6 @@ def delete_trip(request):
                 trip.delete()
 
     return redirect('view_dashboard')
-
-
 
 @permission_required('triptailor.is_guide')
 def create_trip(request):
