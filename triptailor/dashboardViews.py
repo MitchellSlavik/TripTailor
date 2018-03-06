@@ -7,13 +7,23 @@ from .models import *
 import json
 
 @permission_required('triptailor.is_guide')
+def myTrips(request):
+    current_user = request.user
+    try:
+        data = {
+            "mytrips":Trip.objects.filter(guide__user__username__icontains=current_user)
+        }
+    except Trip.DoesNotExist:
+        data = {"searchResults": None}
+    return render(request, "triptailor/trips.html", data)
+    
+@permission_required('triptailor.is_guide')
 def view_dashboard(request):
     data = {
         "trips": request.user.guide.trips.all()
     }
 
     return render(request, 'triptailor/dashboard.html', data)
-
 
 @permission_required('triptailor.is_guide')
 def create_trip(request):
