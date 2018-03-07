@@ -49,9 +49,9 @@ def profile(request):
     return render(request, "registration/profile.html", data)
 
 
-def trips(request,tripId=1):
+def trip(request,trip_id=1):
     if request.method == 'GET':
-        trip = Trip.objects.get(id=tripId)
+        trip = Trip.objects.get(id=trip_id)
         data = {}
         if(len(trip.name)>0):
             #put all the trip Object info in data
@@ -77,7 +77,7 @@ def trips(request,tripId=1):
             
             if(len(locationObjects)>0):
                 #dank quality control check
-                locations = [{"address": loc.name, "placeId": loc.description, "sequence":loc.sequence+1} for loc in locationObjects]
+                locations = [{"address": loc.address , "placeId": loc.placeId, "sequence":loc.sequence+1} for loc in locationObjects]
                 locations_sorted = sorted(locations,key=itemgetter('sequence'))
                 locations_JSON = json.dumps(locations_sorted)
                 data['locations'] = locations_sorted
@@ -88,7 +88,7 @@ def trips(request,tripId=1):
 
             #gather trip photos
             photoObjects = TripPicture.objects.filter(trip=trip)
-            photoUrls = [photo.image.url for photo in photoObjects]
+            photoUrls = [photo.image for photo in photoObjects]
             data['num_stops'] = len(photoUrls) +1
             data['photos'] = photoUrls
             if (len(photoUrls)==0):                         #default photo
