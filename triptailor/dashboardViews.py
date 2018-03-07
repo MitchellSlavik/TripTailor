@@ -111,7 +111,7 @@ def create_trip(request):
 
         #basic server side validation to make sure all our fieds are present
         #can skip major stuff since most processing was done client side
-        create_form_elements = ['name','cost','maxTravelers','date','locations','description']
+        create_form_elements = ['name','cost','maxTravelers','date','locations','description','images']
         #guide_obj = Guide.objects.get(User.objects.get(username=request.user).id)
         if all(item in form_data for item in create_form_elements):
             #fix date?
@@ -123,7 +123,28 @@ def create_trip(request):
                 location = Location(address= place['address'], sequence = seq_count, trip=t,placeId=place['placeId'])
                 location.save()
                 seq_count +=1
+            # seq = 0
+            # if(len(request.FILES)>0): #if we have some images let's add them to our Trip!
+            #     for file in request.FILES:
+            #         print(file.name)
+            #         # https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
+            #         # https://stackoverflow.com/questions/1308386/programmatically-saving-image-to-django-imagefield
+            #         fs = FileSystemStorage()
+            #         image_name = fs.save(file.name,file)
+            #         image_url_on_server = fs.url(image_name)
 
-        return HttpResponse({'status':200})
+            #         image = TripPicture(image=image_url_on_server,sequence=seq,trip=t)
+            #         image.save()
+            #         seq +=1
+            imageUrls = json.loads(form_data['images'])
+            seq = 0
+            if(len(imageUrls)):
+                for url in imageUrls:
+                    image = TripPicture(image=url,sequence=seq,trip=t)
+                    image.save()
+                    seq +=1
+            return HttpResponse({'status':200})
+        else:
+            return HttpResponse({'status':404,'message':"element in posted data was missing"})
     else:
         return render(request, "triptailor/dashboard-create.html", {})
