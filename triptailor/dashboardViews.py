@@ -9,6 +9,17 @@ from datetime import datetime
 import json
 
 @permission_required('triptailor.is_guide')
+def myTrips(request):
+    current_user = request.user
+    try:
+        data = {
+            "mytrips":Trip.objects.filter(guide__user__username__icontains=current_user)
+        }
+    except Trip.DoesNotExist:
+        data = {"searchResults": None}
+    return render(request, "triptailor/trips.html", data)
+    
+@permission_required('triptailor.is_guide')
 def view_dashboard(request):
     prefetch = Prefetch("locations", queryset=Location.objects.all().order_by('sequence'), to_attr="locs")
     
@@ -23,15 +34,54 @@ def view_dashboard(request):
 
 @permission_required('triptailor.is_guide')
 def edit_trip(request, trip_id):
-    try:
-        trip = Trip.objects.get(pk=trip_id)
+    if request.method == 'POST':
+        form_data = request.POST.dict()
 
-        if trip.guide.user.id == request.user.id:
-            return render(request, 'triptailor/dashboard-edit.html')
+        form_data['locations'] = json.loads(form_data['locations'])
+
+        create_form_elements = ['name','cost','maxTravelers','date','locations','description']
+        
+        if all(item in form_data for item in create_form_elements):
+            trip = Trip.objects.get(pk=trip_id)
+
+            trip.name = form_data['name']
+            trip.cost = form_data['cost']
+            trip.maxNumTravelers = form_data['maxTravelers']
+            trip.date = form_data['date']
+            trip.description = form_data['description']
+
+            trip.save()
+
+            trip.locations.all().delete()
+
+            seq_count = 0
+            for place in form_data['locations']:
+                if(place != None):
+                    location = Location(address= place['address'], sequence = seq_count, trip=trip,placeId=place['placeId'])
+                    location.save()
+                    seq_count +=1
+            
+            return HttpResponse({'status':200})
         else:
+            return HttpResponse({'status':500})
+    else:
+        try:
+            trip = Trip.objects.get(pk=trip_id)
+
+            if trip.guide.user.id == request.user.id:
+
+                locations = Location.objects.filter(trip__id=trip_id)
+
+                data = {
+                    "trip": trip,
+                    "locations": locations
+                }
+
+                return render(request, 'triptailor/dashboard-edit.html', data)
+            else:
+                return redirect('view_dashboard')
+        except Trip.DoesNotExist:
             return redirect('view_dashboard')
-    except Trip.DoesNotExist:
-        return redirect('view_dashboard')
 
     
 
@@ -49,8 +99,6 @@ def delete_trip(request):
                 trip.delete()
 
     return redirect('view_dashboard')
-
-
 
 @permission_required('triptailor.is_guide')
 def create_trip(request):
@@ -72,7 +120,7 @@ def create_trip(request):
             t.save()
             seq_count = 0
             for place in form_data['locations']: #iterate over all locations and add them to DB
-                location = Location(name= place['address'], sequence = seq_count, trip=t,description=place['placeId'])
+                location = Location(address= place['address'], sequence = seq_count, trip=t,placeId=place['placeId'])
                 location.save()
                 seq_count +=1
             # seq = 0
@@ -99,18 +147,4 @@ def create_trip(request):
         else:
             return HttpResponse({'status':404,'message':"element in posted data was missing"})
     else:
-        return render(request, "triptailor/create-trip.html", {})
-
-
-@permission_required('triptailor.is_guide')
-def post_new_trip(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        # form = DinnerForm(request.POST)
-        # if form.is_valid():
-            # name = form.cleaned_data['name']
-            # text = form.cleaned_data['text']
-            # query = Dinner(name = name , text = text)
-            # query.save()
-        print('hello world')
-    else:
-        return(request, "triptailor/home.html", {})
+        return render(request, "triptailor/dashboard-create.html", {})

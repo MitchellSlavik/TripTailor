@@ -1,18 +1,142 @@
 {% extends "triptailor/base-template.html" %} 
 {% load static %} 
 {% block header %}
-<style>
-   
-</style>
+    <link rel="stylesheet" href="{% static 'triptailor/dashboard/maps-css.css' %}">
 {% endblock header %}
 
 {% block main %}
-
+    <div class="row">
+        <div class="pac-card col s12 m4 l3" id="pac-card">
+            <div id="title" class="teal accent">
+                Edit Trip
+            </div>
+            <div id="pac-container">
+                <ul class="collapsible" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header active"><i class="material-icons">filter_drama</i>Basic Trip Info</div>
+                        <div class="collapsible-body">
+                            <input type="text" name="name" id="name" placeholder="Trip Name" required value="{{trip.name}}">
+                            <input type="text" name="cost" id="cost" placeholder="Cost $0.00" required value="{{trip.cost}}">
+                            <input type="number" name="maxTravelers" id="maxTravelers" placeholder="Max People" required value={{trip.maxNumTravelers}}>
+                            <input type="text" name="date" id="date" class="datepicker" required placeholder="Date">
+                            <a href="#" class="waves-effect waves-light btn" onclick="$('.collapsible').collapsible('open',1)">Next Step!</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">place</i>Trip Locations</div>
+                        <div class="collapsible-body">
+                            <input id="pac-input" type="text"
+                                placeholder="Enter a location" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
+                            <ul id="location-list" class="collection" style="margin-left:15px; margin-right:15px;">
+                            </ul>
+                            <button id="addLocation" class="waves-effect waves-light btn">
+                                Add
+                            </button>
+                            <a href="#" class="waves-effect waves-light btn" onclick="$('.collapsible').collapsible('open',2)">Next Step!</a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header"><i class="material-icons">whatshot</i>Put in some spunk!</div>
+                        <div class="collapsible-body">
+                            <textarea id="description" class="materialize-textarea" data-length="240" placeholder="Enter your description here! MAX 240 CHARS">{{trip.description}}</textarea>
+                            <button class="btn waves-effect waves-light" type="submit" name="action" id="submitTrip" onclick="createTrip()">Update
+                                <i class="material-icons right">send</i>
+                            </button>
+                        </div>
+                    </li>
+                    </ul>
+            </div>
+        </div>
+        <div id="map" style="height:90vh" class="col s12 m8 l9">
+        </div>
+        <div id="infowindow-content">
+                <img src="" width="16" height="16" id="place-icon">
+                <span id="place-name"  class="title"></span><br>
+                <span id="place-address"></span>
+                </div>
+    </div>
 {% endblock main %}
 
 {% block scripts %} 
 {{ block.super }}
-<script>
-    
-</script> 
+{{ block.super }}
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="{% static 'triptailor/dashboard/maps-api.js' %}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap" async defer></script>
+    <script src="{% static 'triptailor/moment.js' %}"></script>
+    <script src="{% static 'triptailor/dashboard/tripHelpers.js' %}"></script>
+    <script>
+        var el = document.getElementById('location-list');
+        var sortable = Sortable.create(el,{
+            //config for sortable location list
+
+            //The only main thing we need is to fire a makeRoute() event when the list has changed order
+            //we will use getLocations() from tripHelpers to grab our new list locations
+            onUpdate: function(evt){
+                console.log('list updated!!!');
+                //to make sure we can delete things correctly. We need to update our tripList
+                //to account for the new order of things!
+                trip = getLocations()
+                //then we can make our route since we know things are in order
+                makeRoute(ds,dd,getLocations());
+            }
+        });
+    </script>
+    <script>
+        $('.datepicker').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            today: 'Today',
+            clear: 'Clear',
+            close: 'Ok',
+            closeOnSelect: false // Close upon selecting a date,
+        });
+    </script>
+    <script>
+        /** 
+        * Validates trip, gets data, and posts it to server
+        */
+        function createTrip(){
+            var data = {};
+            if(isTripGood()){
+                data = getTripData(); 
+                data['csrfmiddlewaretoken']='{{ csrf_token }}'; //django needs token for posting to server
+                $('#submitTrip').addClass('disabled');
+                var ajax = $.post("",data,function(){
+                    console.log(result);
+                    window.location = '{% url "view_dashboard" %}'; //auto redirect home
+                });
+                ajax.fail(function(data){ //callback from django if fail
+                    $('#submitTrip').removeClass('disabled');
+                    alert('Post to server failed - '+data.error_message);
+                });
+            }
+        }
+    </script>
+    <script> 
+        $(document).ready(function() {
+            $('#description').characterCounter(); //used for description length
+
+            $('#date').val(moment("{{trip.date}}", "MMM D, YYYY").format("D MMMM, YYYY"));
+            
+            {% for loc in locations %}
+                $("#location-list").append('<li class="collection-item"><span>{{loc.address}}</span><i class="material-icons right close">close</i></li>');
+                trip.push({address: "{{loc.address}}", placeId: "{{loc.placeId}}"});
+            {% endfor %}
+
+            makeRoute(ds,dd,trip);
+        });
+
+        $("#location-list").delegate(".close", "click", function() {
+            var dex = $(this).parent().index();
+            console.log('removing :'+dex+' from trip list' + JSON.stringify(trip[dex]))
+            trip.splice(dex,1);
+            $(this).parent().remove();
+            console.log(trip);
+            //only create new route if we have something to display
+            if(trip.length>0){
+                makeRoute(ds,dd,getLocations());
+            }
+        });
+    </script>
 {% endblock scripts %}

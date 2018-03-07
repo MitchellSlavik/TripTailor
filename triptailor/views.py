@@ -45,11 +45,11 @@ def profile(request):
     return render(request, "registration/profile.html", data)
 
 
-def trips(request):
+def trip(request, trip_id):
     data = {
         'hello': "hello jonathan"
     }
-    return render(request, "triptailor/trips.html", data)
+    return render(request, "triptailor/trip.html", data)
 
 
 def createUserPage(request):
