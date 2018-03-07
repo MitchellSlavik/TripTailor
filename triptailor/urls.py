@@ -8,10 +8,9 @@ from . import dashboardViews
 urlpatterns = [
     path('',views.home, name="home"),
     path('searchtrip/',views.searchTrip, name='searchTrip'),
-    path('trips/',views.trips),
     path('profile/', views.profile, name="profile"),
     path('profile/mytrips', dashboardViews.myTrips, name="my_trips"),
-    path('trips/', views.trips),
+    path('trip/<int:trip_id>', views.trip, name="view_trip"),
     path('register/', views.traveler_register, name="traveler_register"),
     path('login/', views.traveler_login, name="traveler_login"),
     path('guide_register/', views.guide_register, name="guide_register"),
@@ -20,7 +19,6 @@ urlpatterns = [
     path('createuser/', views.createUserPage),
     path('dashboard/', dashboardViews.view_dashboard, name='view_dashboard'),
     path('dashboard/create/', dashboardViews.create_trip, name='create_trip'),
-    path('dashboard/post/', dashboardViews.post_new_trip, name="post_trip"),
-    path('dashbaord/edit/<int:trip_id>', dashboardViews.edit_trip, name='edit_trip'),
+    path('dashboard/edit/<int:trip_id>', dashboardViews.edit_trip, name='edit_trip'),
     path('dashboard/delete/', dashboardViews.delete_trip, name='delete_trip')
 ]
