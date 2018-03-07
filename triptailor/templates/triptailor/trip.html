@@ -43,19 +43,23 @@
         background-color: rgba(28,29,33, .75);
         color: #EEEFF7;
     }
-
-    .image {
-        -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
-            transition: all 1s;
-            height:70vh; 
-    }
     .profile {
         object-fit: cover;
         width:230px;
         height:230px;
+    }
+
+    .botMarZero{
+        margin-bottom: 0px;
+    }
+
+    .zdex3{
+        position: relative;
+        z-index: 100;
+    }
+
+    #locationTitle{
+        font-size: 20px;
     }
 </style>
 {% endblock header %}
@@ -65,17 +69,15 @@
     <div id="Slideshow">
 		<div id="Slider">
             {% for url in photos %}
-            <div class="materialboxed image" 
-            style="background: url({{ url }}) no-repeat center center; 
-            height:70vh;"></div>
-            <!-- <img src="{{url}}" class="image" alt="">
-            {% endfor %} -->
+                <div class="materialboxed image" style="background: url({{ url }}) no-repeat center center; height:60vh;         -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;"></div>
+            {% endfor %}
 		</div>
 		<div id="Arrows">
             <i id="Prev"  class="material-icons">navigate_before</i>
             <i id="Next"  class="material-icons">navigate_next</i>
-			<!-- <i id="Prev" class="fa fa-chevron-left fa-2x" aria-hidden="true"></i> -->
-			<!-- <i id="Next" class="fa fa-chevron-right fa-2x" aria-hidden="true"></i> -->
 		</div>
 	</div>
     </div>
@@ -141,6 +143,16 @@
         </div>
     </div>
     <div hidden id="locations">{{ locations_JSON }}</div>
+    <div hidden id="locationContent">
+        <div>
+            <div class="headerImage">
+            <img id="locationPicture" src="" alt="">
+            </div>
+            <div id="locationTitle" class="truncate"></div>
+            <div class="divider"></div>
+            <div id="locationRating" class="teal-text center"></div>
+        </div>
+    </div>
     <div id="infowindow-content">
             <img src="" width="16" height="16" id="place-icon">
             <span id="place-name"  class="title"></span><br>
@@ -154,6 +166,9 @@
     <script>
         $('nav').addClass('teal lighten-2');
         $('#searchBar').addClass('white');
+        $('#searchBar').addClass('botMarZero');
+        $('.row:first').addClass('botMarZero');
+        $('.row:first').addClass('zdex3');
     </script>
 
     <script>

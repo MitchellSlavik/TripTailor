@@ -201,9 +201,7 @@ function initMap() {
   });
   place_Service = new google.maps.places.PlacesService(map);
 
-  infowindow = new google.maps.InfoWindow();
-  infowindowContent = document.getElementById('infowindow-content');
-  infowindow.setContent(infowindowContent);
+  infoWindow = new google.maps.InfoWindow();
   marker = new google.maps.Marker({
     map: map,
     anchorPoint: new google.maps.Point(0, -29)
@@ -271,7 +269,7 @@ function makeRoute(directionsService,directionsDisplay,routeList){
  * @param {String} placeId //id of location
  */
 function showDetails(placeId){
-  infowindow.close();
+  infoWindow.close();
   marker.setVisible(false);
   request = {
     "placeId":placeId
@@ -288,26 +286,22 @@ function placeCallback(data,status){
       place = {};
     }
     console.log(data);
-  // console.log(place);
-  // // if (!place.geometry) {
-  // //   window.alert("No details available for input: '" + place.name + "'");
-  // //   return;
-  // // }
 
-  // // If the place has a geometry, then present it on a map.
-  // if (place.geometry.viewport) {
-  //   map.fitBounds(place.geometry.viewport);
-  // } else {
-  //   map.setCenter(place.geometry.location);
-  //   map.setZoom(17);  // Why 17? Because it looks good. -thank you google you got a laugh out of me - CK
-  // }
-  // marker.setPosition(place.geometry.location);
-  // marker.setVisible(true);
-  
-  // console.log(trip);
-  // infowindowContent.children['place-name'].textContent = place.name;
-  // infowindowContent.children['place-address'].textContent = address;
-  // infowindow.open(map, marker);
+    marker.setPosition(data.geometry.location);
+    marker.setVisible(true);
+    //check data for our info window
+    if(data.rating)
+      starRating(data.rating,document.getElementById("locationRating"));
+
+    photoUrl = typeof data.photos !== 'undefined' ? data.photos[0].getUrl({'maxWidth': 300, 'maxHeight':200}) : '';
+    document.getElementById("locationPicture").src = photoUrl;
+
+    document.getElementById("locationTitle").innerText = data.name ? data.name : '';
+
+
+    infoWindow.setContent(document.getElementById("locationContent").innerHTML);
+    infoWindow.open(map,marker);
+    map.setCenter(marker.getPosition());
 }
 
 /**
@@ -316,6 +310,7 @@ function placeCallback(data,status){
  * @param {Element} location //send in the div object you would like to add a rating to
  */
 function starRating(rating,location){
+  location.innerHTML = '';
   if(rating < 0 || rating > 5){
     console.log('malformed star rating - default @ 3.5');
     rating = 3.5;
@@ -324,8 +319,6 @@ function starRating(rating,location){
     console.log('starRating - location to insert stars is null');
     return;
   }
-  console.log("let's add some stars!");
-  console.log(location);
   for(i = 0; i<Math.trunc(rating); i++)
     location.innerHTML += '<i class="material-icons">star</i>';
   if(rating - Math.trunc(rating) >= 0.5)
