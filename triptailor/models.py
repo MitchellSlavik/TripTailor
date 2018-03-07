@@ -121,9 +121,10 @@ class Review(models.Model):
         return self.title
 
 class TripPicture(models.Model):
-    image = models.ImageField(
-        upload_to="trip_pictures/",
-    ) #TripPicture.image.path (/media/trip_pictures/asdlkfj.png)
+    # image = models.ImageField(
+    #     upload_to="trip_pictures/",
+    # ) #TripPicture.image.path (/media/trip_pictures/asdlkfj.png)
+    image = models.TextField()
     sequence = models.IntegerField()
     trip = models.ForeignKey(
         Trip,

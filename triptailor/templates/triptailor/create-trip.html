@@ -28,7 +28,7 @@
                     <li>
                         <div class="collapsible-header"><i class="material-icons">place</i>Trip Locations</div>
                         <div class="collapsible-body">
-                            <input id="pac-input" type="text"
+                            <input id="pac-input" class="pac-input" type="text"
                                 placeholder="Enter a location" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
                             <ul id="location-list" class="collection" style="margin-left:15px; margin-right:15px;">
                             </ul>
@@ -41,6 +41,13 @@
                     <li>
                         <div class="collapsible-header"><i class="material-icons">whatshot</i>Put in some spunk!</div>
                         <div class="collapsible-body">
+                            <input id="iurl-input" class="pac-input" type="text"
+                                placeholder="Enter image url" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
+                            <ul id="image-list" class="collection" style="margin-left:15px; margin-right:15px;">
+                            </ul>
+                            <button id="addImage" class="waves-effect waves-light btn" style="margin-bottom:10px;">
+                                    Add
+                                </button>
                             <textarea id="description" class="materialize-textarea" data-length="240" placeholder="Enter your description here! MAX 240 CHARS"></textarea>
                             <button class="btn waves-effect waves-light" type="submit" name="action" id="submitTrip">Submit
                                 <i class="material-icons right">send</i>
@@ -86,6 +93,11 @@
                 makeRoute(ds,dd,getLocations());
             }
         });
+
+        var el2 = document.getElementById("image-list");
+        var sortable2 = Sortable.create(el2,{
+            onUpdate(evt){  console.log('list updated!!!'); }
+        });
     </script>
 
     <script>
@@ -107,14 +119,16 @@
             if(isTripGood()){
                 data = getTripData(); 
                 data['csrfmiddlewaretoken']='{{ csrf_token }}'; //django needs token for posting to server
+                console.log(data);
+
                 $('#submitTrip').addClass('disabled');
                 var ajax = $.post("",data,function(){
-                    console.log(result);
-                    window.location = '{% url "view_dashboard" %}'; //auto redirect home
+                        console.log(result);
+                        window.location = '{% url "view_dashboard" %}';
                 });
                 ajax.fail(function(data){ //callback from django if fail
                     $('#submitTrip').removeClass('disabled');
-                    alert('Post to server failed - '+data.error_message);
+                    alert('Post to server failed - '+data.message);
                 });
             }
         }
@@ -138,6 +152,22 @@
                 makeRoute(ds,dd,getLocations());
             }
         });
+
+        $("#image-list").delegate(".close", "click", function() {
+            var dex = $(this).parent().index();
+            console.log('removing :'+dex+' from image list' + JSON.stringify(tripImages[dex]))
+            tripImages.splice(dex,1);
+            $(this).parent().remove();
+            console.log(tripImages);
+        });
+
+        $('#addImage').click(function(){
+            //quick image validation
+            if (validateImage($('#iurl-input').val())){
+              $("#image-list").append('<li class="collection-item"><img src="'+ $('#iurl-input').val() +'" alt="" srcset="" class="responsive-img"> <span hidden>'+$('#iurl-input').val()+'</span><i class="material-icons right close">close</i></li>');
+              $('#iurl-input').val('');
+            }
+          });
     </script>
 
 {% endblock scripts %}
