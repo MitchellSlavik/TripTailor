@@ -1,4 +1,5 @@
 
+var tripImages = [];
 
 /**
  * Only call this function once you've validated the data from isTripGood
@@ -11,6 +12,7 @@ function getTripData(){
         "date":getDate(),
         "locations":JSON.stringify(getLocations()),
         "description":getDescription(),
+        "images":getImages(),
     }; 
 }
 
@@ -51,10 +53,7 @@ function getDate(){
 
 
 function locationTest(){
-    var c = 0;
-    $('#location-list li').each(function(item){
-        c++;
-    });
+    var c = $('#location-list li').length;
     if(c>0)
         return true;
     alert('Your trip is too short! Add something!');
@@ -73,6 +72,25 @@ function getLocations(){
     return locations;
 }
 
+
+function getImages(){
+    var images = [];
+    $('#image-list li').each(function(index){ //each hidden span will have a url to the image
+        var elText = $(this).find('span').text();
+        images.push(elText);
+    });
+    return JSON.stringify(images);
+}
+
+function validateImage(str){
+
+    var fileExtension = str.replace(/.*\./, "");
+    var acceptedExtensions = ['png','jpg','jpeg','bmp','gif','gifv'];
+    var testExtension = function(el){
+        return fileExtension === el;
+    };
+    return acceptedExtensions.some(testExtension);
+}
 
 
 function descriptionTest(){
