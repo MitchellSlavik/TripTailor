@@ -6,8 +6,12 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from .forms import UserForm, TravelerProfileForm, GuideProfileForm
 from django.db.models import Q
+
+import json
+
 # Create your views here.
 
+from operator import itemgetter
 
 def home(request):
     data = {
@@ -45,11 +49,56 @@ def profile(request):
     return render(request, "registration/profile.html", data)
 
 
-def trips(request):
-    data = {
-        'hello': "hello jonathan"
-    }
-    return render(request, "triptailor/trips.html", data)
+def trip(request,trip_id=1):
+    if request.method == 'GET':
+        trip = Trip.objects.get(id=trip_id)
+        data = {}
+        if(len(trip.name)>0):
+            #put all the trip Object info in data
+            data['name'] = trip.name
+            data['cost'] = trip.cost
+            data['maxPeople'] = trip.maxNumTravelers
+            data['date'] = trip.date
+            data['description'] = trip.description
+            
+
+            #gather Guide information
+            guideObject = Guide.objects.get(pk=trip.guide)
+
+            if(guideObject!=None):
+                data['guideName'] = guideObject.user.first_name + " " + guideObject.user.last_name
+                data['guideUserName'] = guideObject.user.username
+                #Rating will go here
+
+
+            #gather trip location list for Google Maps
+            locationObjects = Location.objects.filter(trip=trip.id)
+            locations = []
+            
+            if(len(locationObjects)>0):
+                #dank quality control check
+                locations = [{"address": loc.address , "placeId": loc.placeId, "sequence":loc.sequence+1} for loc in locationObjects]
+                locations_sorted = sorted(locations,key=itemgetter('sequence'))
+                locations_JSON = json.dumps(locations_sorted)
+                data['locations'] = locations_sorted
+                data['locations_JSON'] = locations_JSON
+            else:
+                return render(request,"triptailor/404.html",{"message":"Malformed Trip object. Length of locations are 0","error_object":locationObjects},)
+
+
+            #gather trip photos
+            photoObjects = TripPicture.objects.filter(trip=trip)
+            photoUrls = [photo.image for photo in photoObjects]
+            data['num_stops'] = len(photoUrls) +1
+            data['photos'] = photoUrls
+            if (len(photoUrls)==0):                         #default photo
+                data['photos'] = ['https://static.boredpanda.com/blog/wp-content/uploads/2014/10/national-geographic-photo-contest-2014-photography-15.jpg'
+                ,'https://www.planwallpaper.com/static/images/7004579-cool-hd-wallpapers.jpg']
+
+        else:
+            return render(request,"triptailor/404.html",{"message":"Trip doesn't exist yo!"})
+    
+    return render(request, "triptailor/trip.html",data)
 
 
 def createUserPage(request):

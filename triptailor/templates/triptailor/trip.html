@@ -63,3 +63,217 @@
    
 </script> 
 {% endblock scripts %}
+=======
+{% extends 'triptailor/searchbar-template.html' %}
+{% load static %}
+{% block header %}
+<style>
+    #Slideshow{
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+    #Slider{
+        height: 60vh;
+        overflow: hidden;
+        width: 100%;
+    }
+    #Arrows{
+        display: flex;
+        justify-content: space-between;
+        position: absolute;
+        width: 100%;
+    }
+    
+    #Arrows i{
+        background-color: rgba(255, 255, 255, .25);
+        color: #1C1D21;
+        cursor: pointer;
+        padding: 30px;
+    
+        transition: background-color .5s, color .5s;
+    }
+    
+    #Arrows i:first-of-type{ 
+        padding-right: 20px;
+    }
+    
+    #Arrows i:last-of-type{ 
+        padding-left: 20px;
+    }
+    
+    #Arrows i:hover{
+        background-color: rgba(28,29,33, .75);
+        color: #EEEFF7;
+    }
+    .profile {
+        object-fit: cover;
+        width:230px;
+        height:230px;
+    }
+
+    .botMarZero{
+        margin-bottom: 0px;
+    }
+
+    .zdex3{
+        position: relative;
+        z-index: 100;
+    }
+
+    #locationTitle{
+        font-size: 20px;
+    }
+</style>
+{% endblock header %}
+{% block belowSearch %}
+
+    <!-- we want a row for wrapping on multiple screen sizes. We've inherited container already -->  
+    <div id="Slideshow">
+		<div id="Slider">
+            {% for url in photos %}
+                <div class="materialboxed image" style="background: url({{ url }}) no-repeat center center; height:60vh;         -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;"></div>
+            {% endfor %}
+		</div>
+		<div id="Arrows">
+            <i id="Prev"  class="material-icons">navigate_before</i>
+            <i id="Next"  class="material-icons">navigate_next</i>
+		</div>
+	</div>
+    </div>
+        
+    <div class="">
+        <div class="z-depth-3" style=" position: relative; z-index:3;">
+            <div class="row container" style="padding-top:3vh; margin-bottom:0px;">
+                <div class="col s12 m10 l9">
+                    <div class="valign-wrapper">
+                            <h4 style="padding-left: 5vh;">{{name}}</h4>
+                    </div>
+                </div>
+                <div class="col s12 m2 l3">
+                    <h5>Guide: {{guideName}} <img src="{{photos.1}}" class="responsive-img circle profile" alt=""></h5>
+                    
+                    <!-- {{guide.picture.url}} -->
+                </div>
+                <div class="col s12 divider"></div>
+                <div class="col s12" style="padding-top: 4vh;">
+                    <!-- icon info -->
+                    <div class="center row">
+                        <div class="col s12 m10 l8 push-m1 push-l2 row">
+                            <div class="col s4">
+                                <div class="row">
+                                    <i class="material-icons col s12 m2">people</i>
+                                    <span class="col s12 m10">Max Travelers {{maxPeople}}</span>
+                                </div>                        
+                            </div>
+                            <div class="col s4">
+                                <div class="row">
+                                    <i class="material-icons col s12 m2">location_searching</i>
+                                    <span class="col s12 m10">Number of Stops {{num_stops}}</span>
+                                </div>                        
+                            </div>
+                            <div class="col s4">
+                                <div class="row">
+                                    <i class="material-icons col s12 m2">monetization_on</i>
+                                    <span class="col s12 m10">Cost per person ${{cost}}</span>
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12" style="padding-bottom:3vh;">
+                        <h4>Description</h4>
+                        <p>{{description}}</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row" style="position:relative;">
+            <div class="col s12 m4 l3">
+                <h4>Trip Stops</h4>
+                <div class="collection trip-stops">
+                    {% for stop in locations %}
+                        <a href="#!" class="collection-item">Stop {{stop.sequence}} - {{stop.address}}<span hidden class="id">{{stop.placeId}}</span></a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div id="map" style="height:90vh" class="col s12 m8 l9">
+            </div>
+
+        </div>
+    </div>
+    <div hidden id="locations">{{ locations_JSON }}</div>
+    <div hidden id="locationContent">
+        <div>
+            <div class="headerImage">
+            <img id="locationPicture" src="" alt="">
+            </div>
+            <div id="locationTitle" class="truncate"></div>
+            <div class="divider"></div>
+            <div id="locationRating" class="teal-text center"></div>
+        </div>
+    </div>
+    <div id="infowindow-content">
+            <img src="" width="16" height="16" id="place-icon">
+            <span id="place-name"  class="title"></span><br>
+            <span id="place-address"></span>
+            </div>
+{% endblock belowSearch %}
+    
+
+{% block scripts %}
+<!-- styling of search and navbar -->
+    <script>
+        $('nav').addClass('teal lighten-2');
+        $('#searchBar').addClass('white');
+        $('#searchBar').addClass('botMarZero');
+        $('.row:first').addClass('botMarZero');
+        $('.row:first').addClass('zdex3');
+    </script>
+
+    <script>
+        $("#Next").click(function(){
+            $("#Slider").append($("#Slider div.material-placeholder:first-of-type"));
+        });
+        
+        $("#Prev").click(function(){
+            $("#Slider").prepend($("#Slider div.material-placeholder:last-of-type"));
+        });
+
+        //when loading page make sure first stop is active and center map focus around it
+        $('.trip-stops a:first-child').addClass("active");
+
+        $('.colleciton-item').click(function(){
+            console.log('hello world im a collecion item');
+        });
+
+        var tripString = document.getElementById("locations").innerText;
+        var trip = JSON.parse(tripString);
+        console.log(trip)
+
+        
+    
+    </script>
+    <script src="{% static 'triptailor/viewTrip/maps-api.js' %}"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDHOBJ41T5R3_iSS4OqeMylwOr0XK-fr-Y&libraries=places&callback=initMap"
+            async defer></script>
+    <script>
+        $('.collection-item').click(function(obj){
+            //add color to item to make it easier for person to tell which is active
+            $('.collection .collection-item,.active').removeClass('active');
+            $(this).addClass('active');
+            //now let's add details for user about the location they clicked on
+            var placeId = $(this).find('span').text();
+            console.log(placeId);    
+            if(placeId){
+                showDetails(placeId);
+            }
+        })
+    </script>
+{% endblock scripts %}
