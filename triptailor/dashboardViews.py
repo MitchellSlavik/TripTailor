@@ -60,6 +60,18 @@ def edit_trip(request, trip_id):
                     location = Location(address= place['address'], sequence = seq_count, trip=trip,placeId=place['placeId'])
                     location.save()
                     seq_count +=1
+
+            trip.images.all().delete()
+
+            imageUrls = json.loads(form_data['images'])
+
+            seq_count = 0
+            if(len(imageUrls)):
+                for url in imageUrls:
+                    if(url != None):
+                        picture = TripPicture(image=url,sequence=seq_count,trip=t)
+                        picture.save()
+                        seq_count += 1
             
             return HttpResponse({'status':200})
         else:
