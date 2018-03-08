@@ -17,7 +17,7 @@ def myTrips(request):
         }
     except Trip.DoesNotExist:
         data = {"searchResults": None}
-    return render(request, "triptailor/trip.html", data)
+    return render(request, "triptailor/myTrips.html", data)
     
 @permission_required('triptailor.is_guide')
 def view_dashboard(request):
