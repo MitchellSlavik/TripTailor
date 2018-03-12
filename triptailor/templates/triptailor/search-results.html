@@ -31,6 +31,9 @@
                         <div class="right activator">Date: {{trip.date}}</div>
                     </div>
                 </div>
+                <div>
+                        <a href="{% url 'view_trip' trip_id=trip.id %}">Trip Details</a>
+                </div>
                 <div class="card-reveal">
                     <span class="card-title activator">Trip Details
                         <i class="material-icons right">close</i>
