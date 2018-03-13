@@ -69,7 +69,7 @@ def edit_trip(request, trip_id):
             if(len(imageUrls)):
                 for url in imageUrls:
                     if(url != None):
-                        picture = TripPicture(image=url,sequence=seq_count,trip=t)
+                        picture = TripPicture(image=url,sequence=seq_count,trip=trip)
                         picture.save()
                         seq_count += 1
             
@@ -82,11 +82,13 @@ def edit_trip(request, trip_id):
 
             if trip.guide.user.id == request.user.id:
 
-                locations = Location.objects.filter(trip__id=trip_id)
+                locations = Location.objects.filter(trip__id=trip_id).order_by('sequence')
+                images = TripPicture.objects.filter(trip__id=trip_id).order_by('sequence')
 
                 data = {
                     "trip": trip,
-                    "locations": locations
+                    "locations": locations,
+                    "images": images
                 }
 
                 return render(request, 'triptailor/dashboard-edit.html', data)
