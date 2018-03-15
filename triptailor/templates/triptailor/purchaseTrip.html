@@ -1,0 +1,47 @@
+{% extends 'triptailor/base-template.html' %}
+{% load static %}
+
+{% block header %}
+    <style>
+        .formTitle{
+            font-weight: 300; 
+            padding-bottom:2vh; 
+            padding-top:1vh;
+            color:white;
+        }
+    </style>
+{% endblock header %}
+    
+
+{% block main %}
+<div class="container">
+    <form action="{% url 'purchase' trip_id=trip_id openSpots=openSpots %}" method="post" class="card z-depth-4 row">
+        {% csrf_token %}
+        <h2 class="truncate center teal formTitle z-depth-1">{{name}}</h2>
+        <h4 style="font-weight: 400" class="col s12 center">Trip Sign Up</h4>
+        <h5 style="padding-left:5vw">Price per person: {{price}}</h5>
+        <h5></h5>
+        <div class="input-field col s12">
+            <div class="divider"></div>
+            <div class="row">
+                <div class="col s12 m4">
+                    <h5  style="padding-left:5vw;">Number of Travelers</h5>
+                </div>
+                <div class="col s12 m8">
+                    <p class="range-field" style="margin-left:5vw; margin-right:5vw;">
+                        <input type="range" id="numberTickets" min="1" max="{{openSpots}}"/>
+                    </p>
+                </div>
+                <div class="col s12 m12">
+                    <span class="right" style="padding-right:5vw">(Max Available: {{openSpots}})</span>
+                </div>
+            </div>    
+        </div>
+        <div class="center" style="padding:5vh">
+            <button class="btn waves-effect waves-light center" type="submit" name="action">Submit
+                <i class="material-icons right">send</i>
+            </button>
+        </div>
+    </form>   
+</div> 
+{% endblock main %}

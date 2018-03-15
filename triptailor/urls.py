@@ -20,5 +20,6 @@ urlpatterns = [
     path('dashboard/', dashboardViews.view_dashboard, name='view_dashboard'),
     path('dashboard/create/', dashboardViews.create_trip, name='create_trip'),
     path('dashboard/edit/<int:trip_id>', dashboardViews.edit_trip, name='edit_trip'),
-    path('dashboard/delete/', dashboardViews.delete_trip, name='delete_trip')
+    path('dashboard/delete/', dashboardViews.delete_trip, name='delete_trip'),
+    path('purchaseTrip/<int:trip_id>/<int:openSpots>',views.purchaseTrip,name="purchase")
 ]

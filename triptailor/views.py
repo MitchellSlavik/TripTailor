@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
@@ -50,11 +50,14 @@ def profile(request):
 
 
 def trip(request,trip_id=1):
+    #if the requested method is a getter, display the trip
     if request.method == 'GET':
+        #get our revelent trip object
         trip = Trip.objects.get(id=trip_id)
-        data = {}
+        data = {} #init data object so we can package our data
         if(len(trip.name)>0):
             #put all the trip Object info in data
+            data['trip_id'] = trip_id
             data['name'] = trip.name
             data['cost'] = trip.cost
             data['maxPeople'] = trip.maxNumTravelers
@@ -64,21 +67,23 @@ def trip(request,trip_id=1):
 
             #gather Guide information
             guideObject = Guide.objects.get(pk=trip.guide)
-
+            #if our trip exists let's add it to the data.
             if(guideObject!=None):
                 data['guideName'] = guideObject.user.first_name + " " + guideObject.user.last_name
                 data['guideUserName'] = guideObject.user.username
                 #Rating will go here
-
+            else:
+                render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
 
             #gather trip location list for Google Maps
             locationObjects = Location.objects.filter(trip=trip.id)
-            locations = []
+            locations = [] #init locations object so we can fill it in our loop
             
             if(len(locationObjects)>0):
                 #dank quality control check
                 locations = [{"address": loc.address , "placeId": loc.placeId, "sequence":loc.sequence+1} for loc in locationObjects]
-                locations_sorted = sorted(locations,key=itemgetter('sequence'))
+                #sort our locations by their sequence attribute to display them in order
+                locations_sorted = sorted(locations,key=itemgetter('sequence')) 
                 locations_JSON = json.dumps(locations_sorted)
                 data['locations'] = locations_sorted
                 data['locations_JSON'] = locations_JSON
@@ -86,19 +91,71 @@ def trip(request,trip_id=1):
                 return render(request,"triptailor/404.html",{"message":"Malformed Trip object. Length of locations are 0","error_object":locationObjects},)
 
 
-            #gather trip photos
+            #gather trip photos from their objects
             photoObjects = TripPicture.objects.filter(trip=trip)
             photoUrls = [photo.image for photo in photoObjects]
             data['num_stops'] = len(photoUrls) +1
+            #pack our photo urls into the data object to be sent back
             data['photos'] = photoUrls
+            
+            #testing / handling for no photos
             if (len(photoUrls)==0):                         #default photo
                 data['photos'] = ['https://static.boredpanda.com/blog/wp-content/uploads/2014/10/national-geographic-photo-contest-2014-photography-15.jpg'
                 ,'https://www.planwallpaper.com/static/images/7004579-cool-hd-wallpapers.jpg']
 
+            #gather all tickets (ie purchased tickets) and compare attendees to max attendes to determine if trip is open
+            tickets = Ticket.objects.filter(trip=trip)
+            totalTravelers = 0
+            #get total amount of travelers
+            for ticket in tickets:
+                totalTravelers += ticket.num_travelers
+            #if we have spots available set open to true
+            data['open'] = data['maxPeople']>totalTravelers
+            #show how many spots are open to the user
+            data['spotsOpen'] = data['maxPeople'] - totalTravelers
+
         else:
             return render(request,"triptailor/404.html",{"message":"Trip doesn't exist yo!"})
-    
-    return render(request, "triptailor/trip.html",data)
+        return render(request,"triptailor/trip.html",data)
+    elif request.method == 'POST':
+        #if its a post we're interested in processing the data
+        return redirect(reverse('purchase',kwargs={"trip_id":trip_id}))
+
+
+def purchaseTrip(request,trip_id=1,openSpots=1):
+    if (request.method == "GET"):
+        #define an object to be sent back to page with data
+        pageData = {}   
+
+        #get our relevant trip so we can parse back its price and other needed infos
+        tripData = Trip.objects.get(pk=trip_id) 
+
+        #recycle our old data into this page (id and openSpots) for form POST
+        pageData['trip_id'] = trip_id
+        pageData['openSpots'] = openSpots
+        
+        #if our trip exists let's grab all the necessary data and put it in our pageData
+        if(tripData.name):
+            pageData['price'] = "$"+str(tripData.cost)
+            pageData['name'] = tripData.name
+            pageData['date'] = tripData.date.strftime("%A, %B %d")
+            pageData['description'] = tripData.description
+        else:
+            render("triptailor/404.html",{"message":"tripData was missing name and is most likely null"})   
+        
+        #everything is packaged, let's return our template and data!
+        return render(request,"triptailor/purchaseTrip.html",pageData)
+
+    #user has posted a form to our url. Let's process it and hopefully add them to the trip!
+    elif (request.method == "POST"):
+        #here we will take request.POST.get('numberTickets') and process a simple Ticket creation
+        print(request.POST)
+        #front end testing prohibits greater than available tickets, but we need to take into account for tickets that could be purchased after the page loads
+        #after we test this, if there are no more spots available, return an error to user explaining that the trip is now full
+
+        #if all tests pass and user has sucessfully purchased their ticket (we don't put in purchase info in this demo)
+        #then redirect them to their profile so they can see their trip has been added
+        return HttpResponse("hello trip purchase Trip:{}".format(trip_id))
 
 
 def createUserPage(request):

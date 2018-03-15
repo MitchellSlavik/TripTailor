@@ -85,8 +85,7 @@ class Ticket(models.Model):
     num_travelers = models.IntegerField()
 
     def __str__(self):
-        return self.trip.name + ' ['+self.traveler.__str__()+'] ('+self.num_travelers+')'
-
+        return "{} [{}] ({})".format(self.trip.name,self.traveler.__str__(),self.num_travelers)
 
 class Location(models.Model):
     address = models.CharField(max_length=100)
