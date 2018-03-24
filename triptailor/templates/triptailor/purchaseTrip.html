@@ -4,7 +4,6 @@
 {% block header %}
     <style>
         .formTitle{
-            font-weight: 300; 
             padding-bottom:2vh; 
             padding-top:1vh;
             color:white;
@@ -18,22 +17,27 @@
     <form action="{% url 'purchase' trip_id=trip_id openSpots=openSpots %}" method="post" class="card z-depth-4 row">
         {% csrf_token %}
         <h2 class="truncate center teal formTitle z-depth-1">{{name}}</h2>
-        <h4 style="font-weight: 400" class="col s12 center">Trip Sign Up</h4>
-        <h5 style="padding-left:5vw">Price per person: {{price}}</h5>
-        <h5></h5>
+        <h4 style="font-weight: 600" class="col s12 center flow-text">How many tickets would you like?</h4>
+        <h5 class="center">Price per person: ${{price}}</h5>
         <div class="input-field col s12">
-            <div class="divider"></div>
             <div class="row">
                 <div class="col s12 m4">
-                    <h5  style="padding-left:5vw;">Number of Travelers</h5>
+                    <span style="padding-left:5vw;" class="flow-text">Number of Tickets / People </span>
                 </div>
                 <div class="col s12 m8">
-                    <p class="range-field" style="margin-left:5vw; margin-right:5vw;">
-                        <input type="range" id="numberTickets" min="1" max="{{openSpots}}"/>
-                    </p>
+                    <div style="margin-left:5vw; margin-right:5vw;">
+                        <p class="range-field">
+                            <input type="range" name="numberTickets" id="numberTickets" min="1" max="{{openSpots}}"/>
+                        </p>
+                    </div>
                 </div>
                 <div class="col s12 m12">
                     <span class="right" style="padding-right:5vw">(Max Available: {{openSpots}})</span>
+                </div>
+                <div class="col s12">
+                    <span class="right flow-text" style="padding-right:5vw">
+                        Total Price: $<span id="totalTicketPrice"></span>
+                    </span>
                 </div>
             </div>    
         </div>
@@ -45,3 +49,32 @@
     </form>   
 </div> 
 {% endblock main %}
+
+{% block scripts %}
+    <script>
+        var ticketPriceStr = "{{price}}" //this is vulnerable to injection attack, but is fine for demo'ing
+        var ticketPrice = parseFloat(ticketPriceStr)
+        
+        setMinTickets();    //auto set to 1 - this page should only be accessible if there is room so this operation is okay.
+        setTotalPrice();    //using global ticketPrice on the page set the price for 1 ticket
+
+        //add a trigger for a change event on the range element when an input event happens
+        $('#numberTickets').on('input',function(val){
+            setTotalPrice();
+        })
+
+        function setMinTickets(){
+            $('#numberTickets').val(1);
+        }
+
+        /**
+        * sets the price of selected tickets on the page
+        * @requires 2 elements, 1. input:range w/ ID: numberTickets 2. span or equiv ID: totalTicketPrice for text display
+        */
+        function setTotalPrice(){
+            var numTickets = $('#numberTickets').val();
+            document.getElementById("totalTicketPrice").innerText = ticketPrice * numTickets;
+        }
+
+    </script>
+{% endblock scripts %}
