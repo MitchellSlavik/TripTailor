@@ -87,32 +87,13 @@ def trip(request,trip_id=1):
                 locations_JSON = json.dumps(locations_sorted)
                 data['locations'] = locations_sorted
                 data['locations_JSON'] = locations_JSON
+                data['num_stops'] = len(locationObjects) +1
             else:
                 return render(request,"triptailor/404.html",{"message":"Malformed Trip object. Length of locations are 0","error_object":locationObjects},)
 
+            data['photos'] = getTripPhotoUrls(trip_id)
 
-            #gather trip photos from their objects
-            photoObjects = TripPicture.objects.filter(trip=trip)
-            photoUrls = [photo.image for photo in photoObjects]
-            data['num_stops'] = len(photoUrls) +1
-            #pack our photo urls into the data object to be sent back
-            data['photos'] = photoUrls
-            
-            #testing / handling for no photos
-            if (len(photoUrls)==0):                         #default photo
-                data['photos'] = ['https://static.boredpanda.com/blog/wp-content/uploads/2014/10/national-geographic-photo-contest-2014-photography-15.jpg'
-                ,'https://www.planwallpaper.com/static/images/7004579-cool-hd-wallpapers.jpg']
-
-            #gather all tickets (ie purchased tickets) and compare attendees to max attendes to determine if trip is open
-            tickets = Ticket.objects.filter(trip=trip)
-            totalTravelers = 0
-            #get total amount of travelers
-            for ticket in tickets:
-                totalTravelers += ticket.num_travelers
-            #if we have spots available set open to true
-            data['open'] = data['maxPeople']>totalTravelers
-            #show how many spots are open to the user
-            data['spotsOpen'] = data['maxPeople'] - totalTravelers
+            data['open'], data['spotsOpen'] = getTripSpotStatus(trip_id)
 
         else:
             return render(request,"triptailor/404.html",{"message":"Trip doesn't exist yo!"})
@@ -122,40 +103,91 @@ def trip(request,trip_id=1):
         return redirect(reverse('purchase',kwargs={"trip_id":trip_id}))
 
 
+def getTripPhotoUrls(tripId):
+    
+    #grab our trip from the DB
+    t = Trip.objects.get(pk=tripId)
+
+    #gather trip photos from their DB objects
+    photoObjects = TripPicture.objects.filter(trip=t)
+    photoUrls = [photo.image for photo in photoObjects]
+            
+    #testing / handling for no photos
+    if (len(photoUrls)==0):                         #default photo
+        photoUrls = ['https://static.boredpanda.com/blog/wp-content/uploads/2014/10/national-geographic-photo-contest-2014-photography-15.jpg'
+        ,'https://www.planwallpaper.com/static/images/7004579-cool-hd-wallpapers.jpg']
+    
+    return photoUrls
+
+
+def getTripSpotStatus(tripId):
+    #gather max amount of people
+    t = Trip.objects.get(id=tripId)
+    maxPeople = t.maxNumTravelers
+
+    #gather all tickets (ie purchased tickets) and compare attendees to max attendes to determine if trip is open
+    tickets = Ticket.objects.filter(trip=t)
+    totalTravelers = 0
+    #get total amount of travelers
+    for ticket in tickets:
+        totalTravelers += ticket.num_travelers
+    #if we have spots available set open to true
+    openTruthy = maxPeople>totalTravelers
+    #show how many spots are open to the user
+    spotsOpen = maxPeople - totalTravelers
+
+    return openTruthy,spotsOpen
+
+
 def purchaseTrip(request,trip_id=1,openSpots=1):
-    if (request.method == "GET"):
-        #define an object to be sent back to page with data
-        pageData = {}   
+    if(hasattr(request.user,'traveler')):
+        if (request.method == "GET"):
+            #define an object to be sent back to page with data
+            pageData = {}   
 
-        #get our relevant trip so we can parse back its price and other needed infos
-        tripData = Trip.objects.get(pk=trip_id) 
+            #get our relevant trip so we can parse back its price and other needed infos
+            tripData = Trip.objects.get(pk=trip_id) 
 
-        #recycle our old data into this page (id and openSpots) for form POST
-        pageData['trip_id'] = trip_id
-        pageData['openSpots'] = openSpots
-        
-        #if our trip exists let's grab all the necessary data and put it in our pageData
-        if(tripData.name):
-            pageData['price'] = "$"+str(tripData.cost)
-            pageData['name'] = tripData.name
-            pageData['date'] = tripData.date.strftime("%A, %B %d")
-            pageData['description'] = tripData.description
-        else:
-            render("triptailor/404.html",{"message":"tripData was missing name and is most likely null"})   
-        
-        #everything is packaged, let's return our template and data!
-        return render(request,"triptailor/purchaseTrip.html",pageData)
+            #recycle our old data into this page (id and openSpots) for form POST
+            pageData['trip_id'] = trip_id
+            pageData['openSpots'] = openSpots
+            
+            #if our trip exists let's grab all the necessary data and put it in our pageData
+            if(tripData.name):
+                pageData['price'] = str(tripData.cost)
+                pageData['name'] = tripData.name
+                pageData['date'] = tripData.date.strftime("%A, %B %d")
+                pageData['description'] = tripData.description
+            else:
+                return render("triptailor/404.html",{"message":"tripData was missing name and is most likely null"})   
+            
+            #everything is packaged, let's return our template and data!
+            return render(request,"triptailor/purchaseTrip.html",pageData)
 
-    #user has posted a form to our url. Let's process it and hopefully add them to the trip!
-    elif (request.method == "POST"):
-        #here we will take request.POST.get('numberTickets') and process a simple Ticket creation
-        print(request.POST)
-        #front end testing prohibits greater than available tickets, but we need to take into account for tickets that could be purchased after the page loads
-        #after we test this, if there are no more spots available, return an error to user explaining that the trip is now full
+        #user has posted a form to our url. Let's process it and hopefully add them to the trip!
+        elif (request.method == "POST"):
+            #here we will take request.POST.get('numberTickets') and process a simple Ticket creation
+            requestedTickets = int(request.POST.get('numberTickets'))
 
-        #if all tests pass and user has sucessfully purchased their ticket (we don't put in purchase info in this demo)
-        #then redirect them to their profile so they can see their trip has been added
-        return HttpResponse("hello trip purchase Trip:{}".format(trip_id))
+            #front end testing prohibits greater than available tickets, but we need to take into account for tickets that could be purchased after the page loads
+            #after we test this, if there are no more spots available, return an error to user explaining that the trip is now full
+            status, spots = getTripSpotStatus(trip_id)
+
+            if(not status):
+                return render("triptailor/404.html",{"message":"trip no longer available.. Sorry!"})
+
+            #if all tests pass and user has sucessfully purchased their ticket (we don't put in purchase info in this demo)
+            #then redirect them to their profile so they can see their trip has been added
+            if(spots < requestedTickets):
+                return render("triptailor/404.html",{"message":"Sorry, we no longer have enough tickets. Available tickets: {}.".format(spots)})
+
+            #all things clear - create and save new element to DB and redirect user to profile
+            new_ticket = Ticket(trip=Trip.objects.get(pk=trip_id),traveler=request.user.traveler,num_travelers=requestedTickets)
+            new_ticket.save()  
+            return redirect('profile')
+
+    else:
+        return redirect('traveler_login')
 
 
 def createUserPage(request):
