@@ -20,6 +20,11 @@ def home(request):
     }
     return render(request, "triptailor/home.html", data)
 
+def aboutUs(request):
+    data = {
+        
+    }
+    return render(request, "triptailor/aboutUs.html", data)
 
 def searchTrip(request):
     if request.method == 'GET':

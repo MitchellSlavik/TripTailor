@@ -1,0 +1,48 @@
+{% extends "triptailor/base-template.html" %} 
+{% load static %} 
+{% block header %}
+<style>
+   body {
+       background: url({% static '/triptailor/home_photo1.jpeg' %}) no-repeat center center;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+   }
+   #about{
+       text-align: center;
+       color: white;
+       margin-top: 125px;
+       background-color: black;
+       opacity: .65;
+   }
+</style>
+{% endblock header %} 
+{% block main %}
+    <div id=about>
+        <h3>About Us!</h3>
+        <p>Trip Tailor is a marketplace to aid prospective travelers in finding local guides in a dream destination city!
+            Sign up as a user to pick and choose which tour is perfect for you or a group of friends. If you are interested
+            in giving tours of your very own home town, sign up as a guide! Guides create tours according to what restaurants, 
+            landmarks, and entertainment venues they are familiar with. As a guide, you may set your own date, time, price, 
+            and group size. After you are finished taking a tour, feel free to leave a review for your guide!
+        </p>
+        <p>
+            Thank you for your interest in the Trip Tailor community! For further questions, please contanct the Trip Tailor team at:
+        </p>
+        <p>
+            TripTailors@email.com
+        </p>
+    </div>
+{% endblock main %}
+{% block scripts %} 
+{{ block.super }}
+<script>
+   $('#searchBar').addClass('white');
+   $('nav').removeClass('teal darken-1');
+   $('nav').addClass("transparent z-depth-0");
+   $("#trip_label, #start_date_label, #end_date_label").addClass('black-text');
+   $('.centerSearchBar').addClass('col s12 m6');
+   $('.centerSearchBar').css({ "float": "none", "margin": "200px auto", "width": "auto", "height": "auto" });
+</script> 
+{% endblock scripts %}
