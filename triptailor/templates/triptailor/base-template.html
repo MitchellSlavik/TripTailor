@@ -43,12 +43,17 @@
           <ul class="right">
             {% if user.is_authenticated %}
             <li>
+              <a href="{% url 'aboutUs' %}"style="color:white;">About Us</a>
+            </li>
+            <li>
               <a class="dropdown-button" href="#!" data-activates="dropdown1">Hi {{ user.first_name }} {{ user.last_name }}!
                 <i class="material-icons right">arrow_drop_down</i>
               </a>
             </li>
             {% else %}
-
+            <li>
+              <a href=# style="color:white;">About Us</a>
+            </li>
             <li>
               <a href="{% url 'guide_register'%}">Guide Space</a>
             </li>

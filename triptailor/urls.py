@@ -7,6 +7,7 @@ from . import dashboardViews
 
 urlpatterns = [
     path('',views.home, name="home"),
+    path('aboutus/', views.aboutUs, name="aboutUs"),
     path('searchtrip/',views.searchTrip, name='searchTrip'),
     path('profile/', views.profile, name="profile"),
     path('profile/mytrips', dashboardViews.myTrips, name="my_trips"),
