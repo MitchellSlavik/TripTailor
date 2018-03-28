@@ -14,7 +14,48 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">
   <script src="{% static 'triptailor/materialize.js' %}"></script> {% block header %} {% endblock header %}
-
+  <style>
+    .image-cropper {
+        max-width: 40px;
+        height: 40px;
+        display: block;
+    }
+    .image_cropper-mobile {
+      max-width: 60px;
+      height: 60px;
+      display: block;
+    }
+    .rounded {
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+        height: inherit;
+        width: inherit;
+        -webkit-border-radius: 50%;
+        -moz-border-radius: 50%;
+        -ms-border-radius: 50%;
+        -o-border-radius: 50%;
+        border-radius: 50%;
+        background:url("http://www.electricvelocity.com.au/Upload/Blogs/smart-e-bike-side_2.jpg") center no-repeat;
+        background-size:cover;
+    }
+    .white-rounded{
+      display: block;
+      margin: 0 auto;
+      height: inherit ;
+      width: inherit;
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+      -o-border-radius: 50%;
+      border-radius: 50%;
+      background-color:white;
+      background-size:cover;
+    }
+    
+  </style>
 </head>
 
 <body>
@@ -22,17 +63,17 @@
     <div class="navbar-fixed">
       <ul id="dropdown1" class="dropdown-content" style="margin-top:64px;">
         <li>
-          <a href="{% url 'profile' %}">Profile</a>
+          <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
         </li>
         {% if perms.triptailor.is_guide %}
         <li class="divider"></li>
         <li>
-          <a href="{% url 'view_dashboard' %}">Dashboard</a>
+          <a href="{% url 'view_dashboard' %}" class="waves-effect">Dashboard</a>
         </li>
         {% endif %}
         <li class="divider"></li>
         <li>
-          <a href="/logout/">Log Out</a>
+          <a href="/logout/" class="waves-effect">Log Out</a>
         </li>
       </ul>
       <nav class="teal lighten-2">
@@ -40,39 +81,93 @@
           <a href="/" class="brand-logo center waves-effect waves-light">
             <img class="logo" src="{% static 'triptailor/logo.svg' %}" alt="">
           </a>
-          <ul class="right">
+          <a href="#!" data-activates="mobile-nav" class=" right button-collapse hide-on-med-and-up"><i class="material-icons">menu</i></a>
+          
+          <ul class="right hide-on-small-only valign-wrapper" >
             {% if user.is_authenticated %}
             <li>
-              <a href="{% url 'aboutUs' %}"style="color:white;">About Us</a>
+              <a href="{% url 'aboutUs' %}"style="color:white;" class="waves-effect">About Us</a>
             </li>
             <li>
-              <a class="dropdown-button" href="#!" data-activates="dropdown1">Hi {{ user.first_name }} {{ user.last_name }}!
-                <i class="material-icons right">arrow_drop_down</i>
+              <a class="dropdown-button" href="#!" data-activates="dropdown1" style="display:block; width:70px">
+                <div class="image-cropper">
+                  <div class="white-rounded">
+                    <div class="rounded"></div>
+                  </div>
+                </div> <!-- {{ user.first_name }} {{ user.last_name }} -->
               </a>
             </li>
             {% else %}
             <li>
-              <a href=# style="color:white;">About Us</a>
+              <a href="{% url 'aboutUs' %}" style="color:white;" class="waves-effect">About Us</a>
             </li>
             <li>
-              <a href="{% url 'guide_register'%}">Guide Space</a>
+              <a href="{% url 'guide_register'%}" class="waves-effect">Guide Space</a>
             </li>
             <li>
-              <a href="{% url 'traveler_login'%}">Log in</a>
+              <a href="{% url 'traveler_login'%}" class="waves-effect">Log in</a>
             </li>
             <li>
-              <a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a>
+              <a href="{% url 'traveler_register'%}#register" class="teal darken-1 waves-effect">Register</a>
             </li>
 
             {% endif %}
           </ul>
 
-
-
+        
 
         </div>
       </nav>
     </div>
+    <ul id="mobile-nav" class="side-nav">
+        {% if user.is_authenticated %}
+          <li><div class="user-view z-depth-1">
+              <div class="background">
+                <img src="https://i.ytimg.com/vi/CubMuBJFtlA/maxresdefault.jpg">
+              </div>
+              <a href="#!user" class="image_cropper-mobile" style="height: 60px"><div class="rounded"></div>
+              <!-- <div class="image-cropper-mobile">
+                  <div class="white-rounded">
+                    <div class="rounded"></div>
+                  </div>
+              </div> -->
+              <a href="#!name"><span class="white-text name" style="padding-bottom: 2vh;">{{ user.first_name }} {{ user.last_name }}</span></a>
+            </div></li>
+          <li><a class="dropdown-button" href="#!" data-activates="dropdown-mobile">{{ user.first_name }} {{ user.last_name }}<i class="material-icons prefix">settings</i></a></li>
+          <ul id="dropdown-mobile" class="dropdown-content" style="margin-top:64px;">
+              <li>
+                <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
+              </li>
+              {% if perms.triptailor.is_guide %}
+              <li class="divider"></li>
+              <li>
+                <a href="{% url 'view_dashboard' %}" class="waves-effect">Dashboard</a>
+              </li>
+              {% endif %}
+              <li class="divider"></li>
+              <li>
+                <a href="/logout/" class="waves-effect">Log Out</a>
+              </li>
+            </ul>
+          
+          <li>
+              <a href="{% url 'aboutUs' %}"style="color:black">About Us <i class="material-icons prefix">person</i></a>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url 'aboutUs' %}" style="color:white;">About Us</a>
+          </li>
+          <li>
+            <a href="{% url 'guide_register'%}">Guide Space</a>
+          </li>
+          <li>
+            <a href="{% url 'traveler_login'%}">Log in</a>
+          </li>
+          <li>
+            <a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a>
+          </li> 
+        {% endif %}
+      </ul>
   </header>
   <main>
     {% block main %} {% endblock main %}
@@ -84,6 +179,13 @@
 
   {% block scripts %}
   <script>
+      $('.button-collapse').sideNav({
+        menuWidth: 300, // Default is 300
+        edge: 'right', // Choose the horizontal origin
+        closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
+        draggable: true, // Choose whether you can drag to open on touch screens,
+      }
+    );
   </script> 
   {% endblock scripts %}
 
