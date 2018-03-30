@@ -49,6 +49,12 @@
                 <div>
                     <a href="{% url 'view_trip' trip_id=trip.id %}">Trip Details</a>
                 </div>
+                <div class="card-reveal">
+                    <span class="card-title activator">Trip Details
+                        <i class="material-icons right">close</i>
+                    </span>
+                    <p>{{ trip.description}}</p>
+                </div>
             </div>
         </div>
         {% endfor %}
