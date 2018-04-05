@@ -36,24 +36,26 @@
                 <div class="card-content activator">
                     <div class="row activator">
                         <div class="col s10 truncate activator" style="font-size: 16px">{{trip.name}}</div>
-                        <div class="right">
+                        <div class="col s2">
                             <i class="material-icons right activator">more_vert</i>
                         </div>
-                        <div class="left card-title activator">${{trip.cost}}</div>
+                        <div class="card-title activator">${{trip.cost}}</div>
+                        <div class="activator">
+                                <div class=" activator">Max People: {{trip.maxNumTravelers}}</div>
+                            </div>
+                            <div class="activator">
+                                <div class="activator">Date: {{trip.date}}</div>
+                            </div>
+                            <div class="activator">
+                                <a href="{% url 'view_trip' trip_id=trip.id %}">Trip Details</a>
+                            </div>
                     </div>
-                    <div class="row activator">
-                        <div class="left activator">Max People: {{trip.maxNumTravelers}}</div>
-                        <div class="right activator">Date: {{trip.date}}</div>
-                    </div>
-                </div>
-                <div>
-                    <a href="{% url 'view_trip' trip_id=trip.id %}">Trip Details</a>
                 </div>
                 <div class="card-reveal">
                     <span class="card-title activator">Trip Details
                         <i class="material-icons right">close</i>
                     </span>
-                    <p>{{ trip.description}}</p>
+                    <p>{{ trip.description }}</p>
                 </div>
             </div>
         </div>

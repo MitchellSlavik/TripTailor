@@ -179,8 +179,10 @@
     
 
 {% block scripts %}
+    {{ block.super }}
 <!-- styling of search and navbar -->
     <script>
+        $('nav').removeClass('darken-1');
         $('nav').addClass('teal lighten-2');
         $('#searchBar').addClass('white');
         $('#searchBar').addClass('botMarZero');
