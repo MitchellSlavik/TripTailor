@@ -51,13 +51,10 @@ def searchTrip(request):
 def profile(request):
     current_user = request.user
     prefetch_pictures = Prefetch("images", queryset=TripPicture.objects.all().order_by('sequence'), to_attr="imgs")
-    print(current_user)
     myTickets = Ticket.objects.filter(traveler__user__username__icontains=current_user)
     myTicketTripIds = [e.trip.id for e in myTickets]
-    print(myTicketTripIds)
 
     myTripsWithPictures = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds)
-    print(list(myTripsWithPictures)[0].imgs[0].image)
     try:
         data = {
             "mytrips": myTripsWithPictures,
