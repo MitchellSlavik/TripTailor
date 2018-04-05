@@ -11,9 +11,10 @@ import json
 @permission_required('triptailor.is_guide')
 def myTrips(request):
     current_user = request.user
+    prefetch_pictures = prefetch = Prefetch("images", queryset=TripPicture.objects.all().order_by('sequence'), to_attr="imgs")
     try:
         data = {
-            "mytrips":Trip.objects.filter(guide__user__username__icontains=current_user)
+            "mytrips":Trip.objects.prefetch_related(prefetch_pictures).filter(guide__user__username__icontains=current_user)
         }
     except Trip.DoesNotExist:
         data = {"searchResults": None}

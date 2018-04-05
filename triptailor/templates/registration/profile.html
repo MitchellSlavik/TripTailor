@@ -24,7 +24,7 @@
 
                     <ul class="flex-menu">
                         <li>
-                            <strong>3</strong> active trips</li>
+                            <strong>{{numtrips}}</strong> active trips</li>
                         <li>
                     </ul>
                 </div>
@@ -34,40 +34,19 @@
         </div>
         {% if perms.triptailor.is_traveler %}
 		<div class="col s12 m8 l9">
-                <h4>Your Trips</h4>
+            <h4>Your Trips</h4>
+            {% for trip in mytrips %}
                 <div class="col s12 m7">
                     <div class="card">
-                        <div class="card-image">
-                            <img src="https://www.healthline.com/hlcmsresource/images/News/public-policy/1105-Does_Mexico_Have_Better_Healthcare_Than_the_United_States-1296x728-header.jpg">
-                            <span class="card-title">Card Title</span>
+                        <div class="card-image waves-effect waves-block waves-light activator" style="background: url({{trip.imgs.0.image}}) no-repeat center center; background-size: cover; height: 25vh;">
+                            <span class="card-title truncate">{{trip.name}}</span>
                         </div>
                         <div class="card-action">
-                            <a href="#">This is a link</a>
+                            <a href="{% url 'view_trip' trip_id=trip.id %}">More Details</a>
                         </div>
                     </div>
-                </div>
-                <div class="col s12 m7">
-                    <div class="card">
-                        <div class="card-image">
-                            <img src="https://mw2.google.com/mw-panoramio/photos/medium/19314033.jpg">
-                            <span class="card-title">Card Title</span>
-                        </div>
-                        <div class="card-action">
-                            <a href="#">This is a link</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col s12 m7">
-                    <div class="card ">
-                        <div class="card-image">
-                            <img src="http://cdn-image.travelandleisure.com/sites/default/files/styles/1600x1000/public/1480528206/sandals-emerald-bay-exumas-INBAHAMAS1129.jpg">
-                            <span class="card-title">Card Title</span>
-                        </div>
-                        <div class="card-action">
-                            <a href="#">This is a link</a>
-                        </div>
-                    </div>
-                </div>
+                </div> 
+            {% endfor %}
     
             </div>
         {% elif perms.triptailor.is_guide%}

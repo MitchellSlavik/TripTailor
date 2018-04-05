@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User, AbstractUser, Group, Permission
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from .models import *
 from .forms import UserForm, TravelerProfileForm, GuideProfileForm
-from django.db.models import Q
+from django.db.models import Q, Prefetch
 
 import json
 
@@ -29,11 +29,12 @@ def aboutUs(request):
 def searchTrip(request):
     if request.method == 'GET':
         searchcriteria = request.GET.get('search_criteria')
+        prefetch_pictures = prefetch = Prefetch("images", queryset=TripPicture.objects.all().order_by('sequence'), to_attr="imgs")
     #    startrange = request.GET.get('start_range')
     #    endrange = request.GET.get('end_range')
         try:
             data = {
-                "searchResults":Trip.objects.filter(Q(name__icontains=searchcriteria) |
+                "searchResults":Trip.objects.prefetch_related(prefetch_pictures).filter(Q(name__icontains=searchcriteria) |
                 Q(maxNumTravelers__icontains=searchcriteria) | Q(description__icontains=searchcriteria) |
                 Q(cost__contains=searchcriteria) | Q(categories__name__icontains=searchcriteria) |
                 Q(guide__user__username__icontains=searchcriteria))
@@ -46,11 +47,24 @@ def searchTrip(request):
         return render(request, "home.html", {})
 
 
-@login_required
+@permission_required("triptailor.is_traveler")
 def profile(request):
-    data = {
-        'hello': "hello colin"
-    }
+    current_user = request.user
+    prefetch_pictures = Prefetch("images", queryset=TripPicture.objects.all().order_by('sequence'), to_attr="imgs")
+    print(current_user)
+    myTickets = Ticket.objects.filter(traveler__user__username__icontains=current_user)
+    myTicketTripIds = [e.trip.id for e in myTickets]
+    print(myTicketTripIds)
+
+    myTripsWithPictures = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds)
+    print(list(myTripsWithPictures)[0].imgs[0].image)
+    try:
+        data = {
+            "mytrips": myTripsWithPictures,
+            "numtrips": len(myTripsWithPictures)
+        }
+    except Trip.DoesNotExist:
+        data = {"searchResults": None}
     return render(request, "registration/profile.html", data)
 
 

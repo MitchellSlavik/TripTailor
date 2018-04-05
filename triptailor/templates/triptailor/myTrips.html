@@ -29,9 +29,7 @@
         {% for trip in mytrips %}
         <div class="col s12 m4 l3">
             <div class="card medium ttcards z-depth-3 hoverable">
-                <div class="card-image waves-effect waves-block waves-light">
-                    <img src="http://exchangedownloads.smarttech.com/public/content/a2/a28daee5-573f-4f1d-943d-807b0fc164f5/previews/medium/0001.png"
-                        alt="" class="activator" />
+                <div class="card-image waves-effect waves-block waves-light activator" style="background: url({{trip.imgs.0.image}}) no-repeat center center; background-size: cover; height: 55%;">
                 </div>
                 <div class="card-content activator">
                     <div class="row activator">
