@@ -7,6 +7,7 @@ from .models import *
 from .forms import UserForm, TravelerProfileForm, GuideProfileForm
 from django.db.models import Q, Prefetch
 
+from datetime import datetime
 import json
 
 # Create your views here.
@@ -54,14 +55,17 @@ def profile(request):
     myTickets = Ticket.objects.filter(traveler__user__username__icontains=current_user)
     myTicketTripIds = [e.trip.id for e in myTickets]
 
-    myTripsWithPictures = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds)
+    upcoming = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds).filter(date__gte=datetime.today())
+    past = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds).filter(date__lt=datetime.today())
+
     try:
         data = {
-            "mytrips": myTripsWithPictures,
-            "numtrips": len(myTripsWithPictures)
+            "upcomingTrips": upcoming,
+            "pastTrips": past,
+            "numtrips": len(upcoming)
         }
     except Trip.DoesNotExist:
-        data = {"searchResults": None}
+        data = {"upcomingTrips": [], "pastTrips": [], "numtrips": 0}
     return render(request, "registration/profile.html", data)
 
 def guideProfile(request, guide_id):
@@ -119,7 +123,7 @@ def trip(request,trip_id=1):
                 
                 reviewAvg /= len(reviews)
 
-                data['reviewAvg'] = reviewAvg
+                data['reviewAvg'] = int(round(reviewAvg))
                 data['numReviews'] = len(reviews)
             else:
                 render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
