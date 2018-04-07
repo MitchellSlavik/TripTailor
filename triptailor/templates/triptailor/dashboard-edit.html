@@ -38,6 +38,13 @@
                     <li>
                         <div class="collapsible-header"><i class="material-icons">whatshot</i>Put in some spunk!</div>
                         <div class="collapsible-body">
+                            <input id="iurl-input" class="pac-input" type="text"
+                                placeholder="Enter image url" style="width:87%; height:2em; margin-bottom:2px;margin-top:2px;">
+                            <ul id="image-list" class="collection" style="margin-left:15px; margin-right:15px;">
+                            </ul>
+                            <button id="addImage" class="waves-effect waves-light btn" style="margin-bottom:10px;">
+                                    Add
+                                </button>
                             <textarea id="description" class="materialize-textarea" data-length="240" placeholder="Enter your description here! MAX 240 CHARS">{{trip.description}}</textarea>
                             <button class="btn waves-effect waves-light" type="submit" name="action" id="submitTrip" onclick="createTrip()">Update
                                 <i class="material-icons right">send</i>
@@ -81,6 +88,8 @@
                 makeRoute(ds,dd,getLocations());
             }
         });
+        var el2 = document.getElementById("image-list");
+        var sortable2 = Sortable.create(el2,{});
     </script>
     <script>
         $('.datepicker').pickadate({
@@ -124,6 +133,10 @@
                 trip.push({address: "{{loc.address}}", placeId: "{{loc.placeId}}"});
             {% endfor %}
 
+            {% for img in images %}
+                $("#image-list").append('<li class="collection-item"><img src="{{ img.image }}" alt="" srcset="" class="responsive-img"> <span hidden>{{ img.image }}</span><i class="material-icons right close">close</i></li>');
+            {% endfor %}
+
             makeRoute(ds,dd,trip);
         });
 
@@ -136,6 +149,22 @@
             //only create new route if we have something to display
             if(trip.length>0){
                 makeRoute(ds,dd,getLocations());
+            }
+        });
+
+        $("#image-list").delegate(".close", "click", function() {
+            var dex = $(this).parent().index();
+            console.log('removing :'+dex+' from image list' + JSON.stringify(tripImages[dex]))
+            tripImages.splice(dex,1);
+            $(this).parent().remove();
+            console.log(tripImages);
+        });
+
+        $('#addImage').click(function(){
+            //quick image validation
+            if (validateImage($('#iurl-input').val())){
+                $("#image-list").append('<li class="collection-item"><img src="'+ $('#iurl-input').val() +'" alt="" srcset="" class="responsive-img"> <span hidden>'+$('#iurl-input').val()+'</span><i class="material-icons right close">close</i></li>');
+                $('#iurl-input').val('');
             }
         });
     </script>

@@ -123,7 +123,7 @@ class TripPicture(models.Model):
     # image = models.ImageField(
     #     upload_to="trip_pictures/",
     # ) #TripPicture.image.path (/media/trip_pictures/asdlkfj.png)
-    image = models.TextField()
+    image = models.TextField(max_length=400)
     sequence = models.IntegerField()
     trip = models.ForeignKey(
         Trip,
