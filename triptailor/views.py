@@ -439,3 +439,22 @@ def user_logout(request):
 
     # Take the user back to the homepage.
     return HttpResponseRedirect('/')
+
+@permission_required('triptailor.is_traveler')
+def review(request, trip_id):
+    if request.method == 'POST':
+        form_data = request.POST.dict()
+
+        form_elements = ['title', 'stars', 'body']
+        
+        if all(item in form_data for item in form_elements):
+            r = Review(title=form_data['title'], stars=form_data['stars'], body=form_data['body'], trip_id=trip_id, traveler_id=request.user.id)
+            r.save()
+        
+        return redirect('view_trip', trip_id=trip_id)
+    else:
+        data = {
+            'trip_id': trip_id
+        }
+        return render(request, 'triptailor/review.html', data)
+

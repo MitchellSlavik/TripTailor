@@ -1,0 +1,84 @@
+{% extends "triptailor/base-template.html" %} 
+{% load static %} 
+{% block header %}
+<style>
+    .rating {
+        unicode-bidi: bidi-override;
+        direction: rtl;
+        float: left;
+        margin-bottom: 20px;
+    }
+    .rating > label {
+        display: inline-block;
+        position: relative;
+        width: 1.1em;
+        font-size: 20px;
+        color: gold;
+    }
+    .rating > label.active:before,
+    .rating > label.active ~ label:before,
+    .rating > label:hover:before,
+    .rating > label:hover ~ label:before {
+        content: "\2605";
+        position: absolute;
+        cursor: pointer;
+    }
+    .rating > label > input:hover {
+        cursor: pointer;
+    }
+    .rating > label > input {
+        display: none;
+    }
+</style>
+{% endblock header %}
+
+{% block main %}
+<div class="row" style="margin:auto">
+    <div class="container">
+        <h5>Write a review:</h5>
+        <form action="{% url 'review' trip_id=trip_id %}" method="POST">
+            {% csrf_token %}
+            <div>
+                <label>
+                    <input type="text" name="title" placeholder="Review title"/>
+                </label>
+            </div>
+            <div class="rating">
+                <label>☆
+                    <input type="radio" name="stars" value="5" />
+                </label>
+                <label>☆
+                    <input type="radio" name="stars" value="4" />
+                </label>
+                <label>☆
+                    <input type="radio" name="stars" value="3" />
+                </label>
+                <label>☆
+                    <input type="radio" name="stars" value="2" />
+                </label>
+                <label>☆
+                    <input type="radio" name="stars" value="1" />
+                </label>
+            </div>
+            <div>
+                <textarea name="body" placeholder="Write your review here!" style="min-height: 100px"></textarea>
+            </div>
+            <div>
+                <input class="btn waves-effect waves-light" type="submit" name="submit" />
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock main %}
+
+{% block scripts %} 
+{{ block.super }}
+<script>
+    $(document).ready(function() {
+        $('label').click(function() {
+            $('label').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script> 
+{% endblock scripts %}
