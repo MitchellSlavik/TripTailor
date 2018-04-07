@@ -1,0 +1,94 @@
+{% extends 'triptailor/base-template.html' %} 
+{% block header %} 
+{% endblock header %} 
+{% block main %}
+<style>
+    .cards-container .card {
+        column-break-inside: avoid;
+        display: inline-block;
+        overflow: visible;
+
+    }
+
+    .stars b {
+        color: gold;
+        font-size: 20px;
+    }
+</style>
+<div class="row">
+    <div class="row col s12">
+
+        <div class="col s12 m4 l3">
+            <div class="card" style="margin-top: 10%;">
+                <div class="card-image">
+                    <img src="https://fourstateheroes.com/assets/heroes/placeholder-profile.png" alt="" class="img-circle img-fluid">
+                </div>
+                <div class="card-content">
+                    <h5>@{{ guide.username}}</h5>
+                    <p>{{ guide.first_name }} {{ user.last_name }}</p>
+
+                    <div class="stars">
+                        {% if stars == 0 %}
+                            <b>☆</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if stars == 1 %}
+                            <b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if stars == 2 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if stars == 3 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if stars == 4 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b>
+                        {% endif %}
+                        {% if stars == 5 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b>
+                        {% endif %}
+                        ({{ numReviews }} reviews)
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+		<div class="col s12 m8 l9">
+            <h4>Reviews</h4>
+            {% for review in reviews %}
+                <div class="col s12 m7">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title">{{review.title}}</span>
+                            <div class="stars">
+                                {% if review.stars == 0 %}
+                                    <b>☆</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                                {% endif %}
+                                {% if review.stars == 1 %}
+                                    <b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                                {% endif %}
+                                {% if review.stars == 2 %}
+                                    <b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b>
+                                {% endif %}
+                                {% if review.stars == 3 %}
+                                    <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b>
+                                {% endif %}
+                                {% if review.stars == 4 %}
+                                    <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b>
+                                {% endif %}
+                                {% if review.stars == 5 %}
+                                    <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b>
+                                {% endif %}
+                            </div>
+                            <div>
+                                {{ review.body }}
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock main %}

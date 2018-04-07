@@ -64,6 +64,28 @@ def profile(request):
         data = {"searchResults": None}
     return render(request, "registration/profile.html", data)
 
+def guideProfile(request, guide_id):
+    guide = User.objects.get(id=guide_id)
+    reviews = Review.objects.filter(trip__guide__user__id=guide_id)
+    print(guide)
+    print(reviews)
+    avg = 0
+
+    for review in reviews:
+        avg += review.stars
+
+    avg /= len(reviews)
+
+    data = {
+        "guide": guide,
+        "reviews": reviews,
+        "stars": int(round(avg)),
+        "numReviews": len(reviews)
+    }
+
+    return render(request, "registration/guideProfile.html", data)
+
+
 
 def trip(request,trip_id=1):
     #if the requested method is a getter, display the trip
@@ -87,7 +109,18 @@ def trip(request,trip_id=1):
             if(guideObject!=None):
                 data['guideName'] = guideObject.user.first_name + " " + guideObject.user.last_name
                 data['guideUserName'] = guideObject.user.username
-                #Rating will go here
+                data['guideId'] = guideObject.user.id
+                
+                reviews = Review.objects.filter(trip__guide__user__id=guideObject.user.id)
+
+                reviewAvg = 0
+                for review in reviews:
+                    reviewAvg += review.stars
+                
+                reviewAvg /= len(reviews)
+
+                data['reviewAvg'] = reviewAvg
+                data['numReviews'] = len(reviews)
             else:
                 render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
 
