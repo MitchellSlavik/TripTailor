@@ -10,6 +10,7 @@ urlpatterns = [
     path('aboutus/', views.aboutUs, name="aboutUs"),
     path('searchtrip/',views.searchTrip, name='searchTrip'),
     path('profile/', views.profile, name="profile"),
+    path('profile/<int:guide_id>', views.guideProfile, name="guideProfile"),
     path('profile/mytrips', dashboardViews.myTrips, name="my_trips"),
     path('trip/<int:trip_id>', views.trip, name="view_trip"),
     path('register/', views.traveler_register, name="traveler_register"),

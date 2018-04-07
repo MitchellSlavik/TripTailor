@@ -34,8 +34,8 @@
         </div>
         {% if perms.triptailor.is_traveler %}
 		<div class="col s12 m8 l9">
-            <h4>Your Trips</h4>
-            {% for trip in mytrips %}
+            {% if upcomingTrips|length_is:"0" is False %}<h4>Upcoming Trips</h4>{% endif %}
+            {% for trip in upcomingTrips %}
                 <div class="col s12 m7">
                     <div class="card">
                         <div class="card-image waves-effect waves-block waves-light activator" style="background: url({{trip.imgs.0.image}}) no-repeat center center; background-size: cover; height: 25vh;">
@@ -47,27 +47,22 @@
                     </div>
                 </div> 
             {% endfor %}
-    
-            </div>
-        {% elif perms.triptailor.is_guide%}
-        <h4>Guide Dashboard</h4>
+            <div style="clear: both"></div>
+            {% if pastTrips|length_is:"0" is False %}<h4>Past Trips</h4>{% endif %}
+            {% for trip in pastTrips %}
                 <div class="col s12 m7">
                     <div class="card">
+                        <div class="card-image waves-effect waves-block waves-light activator" style="background: url({{trip.imgs.0.image}}) no-repeat center center; background-size: cover; height: 25vh;">
+                            <span class="card-title truncate">{{trip.name}}</span>
+                        </div>
                         <div class="card-action">
-                            <a href="{% url 'my_trips' %}">My Trips</a>
+                            <a href="{% url 'review' trip_id=trip.id %}">Review Trip</a>
                         </div>
                     </div>
-                </div>
-                <div class="col s12 m7">
-                    <div class="card">
-                        <div class="card-action">
-                            <a href="{% url 'create_trip' %}">Create trips</a>
-                        </div>
-                    </div>
-                </div>
+                </div> 
+            {% endfor %}
+        </div>
         {% endif %}
-        
-
     </div>
 </div>
 </roq>

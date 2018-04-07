@@ -7,6 +7,7 @@ from .models import *
 from .forms import UserForm, TravelerProfileForm, GuideProfileForm
 from django.db.models import Q, Prefetch
 
+from datetime import datetime
 import json
 
 # Create your views here.
@@ -54,15 +55,40 @@ def profile(request):
     myTickets = Ticket.objects.filter(traveler__user__username__icontains=current_user)
     myTicketTripIds = [e.trip.id for e in myTickets]
 
-    myTripsWithPictures = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds)
+    upcoming = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds).filter(date__gte=datetime.today())
+    past = Trip.objects.prefetch_related(prefetch_pictures).filter(pk__in=myTicketTripIds).filter(date__lt=datetime.today())
+
     try:
         data = {
-            "mytrips": myTripsWithPictures,
-            "numtrips": len(myTripsWithPictures)
+            "upcomingTrips": upcoming,
+            "pastTrips": past,
+            "numtrips": len(upcoming)
         }
     except Trip.DoesNotExist:
-        data = {"searchResults": None}
+        data = {"upcomingTrips": [], "pastTrips": [], "numtrips": 0}
     return render(request, "registration/profile.html", data)
+
+def guideProfile(request, guide_id):
+    guide = User.objects.get(id=guide_id)
+    reviews = Review.objects.filter(trip__guide__user__id=guide_id)
+    print(guide)
+    print(reviews)
+    avg = 0
+
+    for review in reviews:
+        avg += review.stars
+
+    avg /= len(reviews)
+
+    data = {
+        "guide": guide,
+        "reviews": reviews,
+        "stars": int(round(avg)),
+        "numReviews": len(reviews)
+    }
+
+    return render(request, "registration/guideProfile.html", data)
+
 
 
 def trip(request,trip_id=1):
@@ -87,7 +113,18 @@ def trip(request,trip_id=1):
             if(guideObject!=None):
                 data['guideName'] = guideObject.user.first_name + " " + guideObject.user.last_name
                 data['guideUserName'] = guideObject.user.username
-                #Rating will go here
+                data['guideId'] = guideObject.user.id
+                
+                reviews = Review.objects.filter(trip__guide__user__id=guideObject.user.id)
+
+                reviewAvg = 0
+                for review in reviews:
+                    reviewAvg += review.stars
+                
+                reviewAvg /= len(reviews)
+
+                data['reviewAvg'] = int(round(reviewAvg))
+                data['numReviews'] = len(reviews)
             else:
                 render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
 

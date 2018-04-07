@@ -61,6 +61,11 @@
     #locationTitle{
         font-size: 20px;
     }
+
+    .stars b {
+        color: gold;
+        font-size: 20px;
+    }
 </style>
 {% endblock header %}
 {% block belowSearch %}
@@ -91,9 +96,28 @@
                     </div>
                 </div>
                 <div class="col s12 m2 l3">
-                    <h5>Guide: {{guideName}} <img src="{{photos.1}}" class="responsive-img circle profile" alt=""></h5>
-                    
-                    <!-- {{guide.picture.url}} -->
+                    <a class="waves-effect waves-light btn" href="{% url 'guideProfile' guide_id=guideId %}">{{guideName}} <img src="{{photos.1}}" class="responsive-img circle profile" alt=""></a>
+                    <div class="stars">
+                        {% if reviewAvg == 0 %}
+                            <b>☆</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if reviewAvg == 1 %}
+                            <b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if reviewAvg == 2 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if reviewAvg == 3 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b><b>☆</b>
+                        {% endif %}
+                        {% if reviewAvg == 4 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>☆</b>
+                        {% endif %}
+                        {% if reviewAvg == 5 %}
+                            <b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b><b>&#x2605;</b>
+                        {% endif %}
+                        ({{ numReviews }} reviews)
+                    </div>
                 </div>
                 <div class="col s12 divider"></div>
                 <div class="col s12" style="padding-top: 4vh;">
