@@ -7,7 +7,7 @@ from .models import *
 from .forms import UserForm, TravelerProfileForm, GuideProfileForm
 from django.db.models import Q, Prefetch
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 
 # Create your views here.
@@ -15,11 +15,7 @@ import json
 from operator import itemgetter
 
 def home(request):
-    data = {
-        "userLoggedIn": False,
-        "searchResults": Trip.objects.all()
-    }
-    return render(request, "triptailor/home.html", data)
+    return render(request, "triptailor/home.html", {})
 
 def aboutUs(request):
     data = {
@@ -31,15 +27,31 @@ def searchTrip(request):
     if request.method == 'GET':
         searchcriteria = request.GET.get('search_criteria')
         prefetch_pictures = prefetch = Prefetch("images", queryset=TripPicture.objects.all().order_by('sequence'), to_attr="imgs")
-    #    startrange = request.GET.get('start_range')
-    #    endrange = request.GET.get('end_range')
+        
+        #This stretch of code handles getting the date values from the input form and formatting them for our search
+        # Specifically we handle start + 1 year / start - end / now to end / now + 1 year /
+        # we also handle if the end date happens before the start date it will send it to a 404 error page
+        startrange = request.GET.get('start_range')
+        if len(startrange) >0:
+            startrange = datetime.strptime(startrange,"%d %B, %Y")
+        else:
+            startrange = datetime.now()
+        endrange = request.GET.get('end_range')
+        if len(endrange) >0:
+            endrange = datetime.strptime(endrange,"%d %B, %Y")
+        else:
+            endrange = datetime.now() + timedelta(days=365)
+        if endrange < startrange:
+            return render(request,"triptailor/404.html",{"message":"end date is before our start date! That's impossible"})
+        print("start: {} - end: {}".format(startrange,endrange))
         try:
+            d = Q(date__range=(startrange, endrange))
             data = {
-                "searchResults":Trip.objects.prefetch_related(prefetch_pictures).filter(Q(name__icontains=searchcriteria) |
-                Q(maxNumTravelers__icontains=searchcriteria) | Q(description__icontains=searchcriteria) |
-                Q(cost__contains=searchcriteria) | Q(categories__name__icontains=searchcriteria) |
-                Q(guide__user__username__icontains=searchcriteria))
-                #Trip.objects.filter(date__range=[startrange, endrange])
+                #The date range query has been appened to each query to make sure all other queries reflect the correct date range search
+                "searchResults":Trip.objects.prefetch_related(prefetch_pictures).filter(Q(name__icontains=searchcriteria) and d |
+                Q(maxNumTravelers__icontains=searchcriteria) and d | Q(description__icontains=searchcriteria) and d|
+                Q(cost__contains=searchcriteria) and d| Q(categories__name__icontains=searchcriteria) and d|
+                Q(guide__user__username__icontains=searchcriteria) and d)
             }
         except Trip.DoesNotExist:
             data = {"searchResults": None}
@@ -126,7 +138,7 @@ def trip(request,trip_id=1):
                 data['reviewAvg'] = int(round(reviewAvg))
                 data['numReviews'] = len(reviews)
             else:
-                render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
+                return render(request,"triptailor/404.html",{"message":"Guide on trip: {} doesn't exist!!".format(trip.name)})
 
             #gather trip location list for Google Maps
             locationObjects = Location.objects.filter(trip=trip.id)
