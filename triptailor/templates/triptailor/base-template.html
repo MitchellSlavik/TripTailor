@@ -62,14 +62,18 @@
   <header>
     <div class="navbar-fixed">
       <ul id="dropdown1" class="dropdown-content" style="margin-top:64px;">
-        <li>
-          <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
-        </li>
         {% if perms.triptailor.is_guide %}
+        <li>
+          <a href="{% url 'guideProfile' guide_id=user.id %}">Profile</a>
+        </li>
         <li class="divider"></li>
         <li>
           <a href="{% url 'view_dashboard' %}" class="waves-effect">Dashboard</a>
         </li>
+        {% else %}
+          <li>
+            <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
+          </li>
         {% endif %}
         <li class="divider"></li>
         <li>
@@ -135,14 +139,18 @@
             </div></li>
           <li><a class="dropdown-button" href="#!" data-activates="dropdown-mobile">{{ user.first_name }} {{ user.last_name }}<i class="material-icons prefix">settings</i></a></li>
           <ul id="dropdown-mobile" class="dropdown-content" style="margin-top:64px;">
-              <li>
-                <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
-              </li>
               {% if perms.triptailor.is_guide %}
+              <li>
+                <a href="{% url 'guideProfile' guide_id=user.id %}">Profile</a>
+              </li>
               <li class="divider"></li>
               <li>
                 <a href="{% url 'view_dashboard' %}" class="waves-effect">Dashboard</a>
               </li>
+              {% else %}
+                <li>
+                  <a href="{% url 'profile' %}" class="waves-effect">Profile</a>
+                </li>
               {% endif %}
               <li class="divider"></li>
               <li>
@@ -155,7 +163,7 @@
           </li>
         {% else %}
           <li>
-            <a href="{% url 'aboutUs' %}" style="color:white;">About Us</a>
+            <a href="{% url 'aboutUs' %}" style="color:black;">About Us</a>
           </li>
           <li>
             <a href="{% url 'guide_register'%}">Guide Space</a>
@@ -164,7 +172,7 @@
             <a href="{% url 'traveler_login'%}">Log in</a>
           </li>
           <li>
-            <a href="{% url 'traveler_register'%}#register" class="teal darken-1">Register</a>
+            <a href="{% url 'traveler_register'%}#register" class="">Register</a>
           </li> 
         {% endif %}
       </ul>

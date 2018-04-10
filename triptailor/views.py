@@ -132,9 +132,10 @@ def trip(request,trip_id=1):
                 reviewAvg = 0
                 for review in reviews:
                     reviewAvg += review.stars
-                
-                reviewAvg /= len(reviews)
-
+                if len(reviews) >0: #if a guide is new. They have no reviews. Handles div by 0
+                    reviewAvg /= len(reviews)
+                else:
+                    reviewAvg = 0
                 data['reviewAvg'] = int(round(reviewAvg))
                 data['numReviews'] = len(reviews)
             else:
