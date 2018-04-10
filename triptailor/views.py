@@ -89,8 +89,10 @@ def guideProfile(request, guide_id):
 
     for review in reviews:
         avg += review.stars
-
-    avg /= len(reviews)
+    if len(reviews) >0: #if a guide is new. They have no reviews. Handles div by 0
+        avg /= len(reviews)
+    else:
+        avg = 0
 
     data = {
         "guide": guide,
