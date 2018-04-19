@@ -45,13 +45,12 @@ def searchTrip(request):
             return render(request,"triptailor/404.html",{"message":"end date is before our start date! That's impossible"})
         print("start: {} - end: {}".format(startrange,endrange))
         try:
-            d = Q(date__range=(startrange, endrange))
             data = {
                 #The date range query has been appened to each query to make sure all other queries reflect the correct date range search
-                "searchResults":Trip.objects.prefetch_related(prefetch_pictures).filter(Q(name__icontains=searchcriteria) and d |
-                Q(maxNumTravelers__icontains=searchcriteria) and d | Q(description__icontains=searchcriteria) and d|
-                Q(cost__contains=searchcriteria) and d| Q(categories__name__icontains=searchcriteria) and d|
-                Q(guide__user__username__icontains=searchcriteria) and d)
+                "searchResults":Trip.objects.prefetch_related(prefetch_pictures).filter(Q(name__icontains=searchcriteria,date__range=(startrange, endrange)) |
+                Q(maxNumTravelers__icontains=searchcriteria,date__range=(startrange, endrange)) | Q(description__icontains=searchcriteria,date__range=(startrange, endrange)) |
+                Q(cost__contains=searchcriteria,date__range=(startrange, endrange)) | Q(categories__name__icontains=searchcriteria,date__range=(startrange, endrange)) |
+                Q(guide__user__username__icontains=searchcriteria,date__range=(startrange, endrange)))
             }
         except Trip.DoesNotExist:
             data = {"searchResults": None}
